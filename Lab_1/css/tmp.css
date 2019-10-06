@@ -1,15 +1,19 @@
-.list : {
-	border: solid;
-	border-color: #FF0000;
-	border-width: 3px;
+.header-container {
+	width: 100%;
+	border: solid rgb(255, 0, 255);
 }
 
-.text : {
-	background-color: #00FF00;
+.header-site {
+	float: left;
+	border: solid rgb(255, 0, 0);
 }
 
-.table : {
-	border: solid;
-	border-color: #FF0000;
-	border-width: 3px;
+.header-buttom {
+	float: right;
+	border: solid rgb(255, 0, 0);
+}
+
+.clearfix::after {
+	clear: both;
+	display: table;
 }
