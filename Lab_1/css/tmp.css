@@ -1,0 +1,15 @@
+.list : {
+	border: solid;
+	border-color: #FF0000;
+	border-width: 3px;
+}
+
+.text : {
+	background-color: #00FF00;
+}
+
+.table : {
+	border: solid;
+	border-color: #FF0000;
+	border-width: 3px;
+}
