@@ -1,0 +1,52 @@
+.testing{
+	border: solid rgb(255, 0, 0);
+}
+
+.base-container {
+	display: flex;
+	flex-direction: row;
+	margin-top: auto;
+	margin-bottom: auto;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+.header-site-name {
+	font-size: 30px;
+	font-family: "Times New Roman", Times, serif;
+	letter-spacing: 6px;
+	word-spacing: -5px;
+	color: #FFFFFF;
+	font-weight: normal;
+	text-decoration: none;
+	font-style: italic;
+	font-variant: normal;
+	text-transform: none;
+}
+
+.header-buttom {
+	margin-left: 10px;
+	font-size: 20px;
+}
+
+/*Псевдо-элемент, чтобы у нас не выпадали элементы из родительского блока*/
+/*
+.clearfix::after {
+	content: "";
+	display: table;
+	clear: both;
+}
+*/
+
+
+
+/*
+.base-container{
+	display: flex;
+	flex-direction: row;
+}
+
+.element-container{
+	border: solid rgb(255, 0, 0);	
+}*/
