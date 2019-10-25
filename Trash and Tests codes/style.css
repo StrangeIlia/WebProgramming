@@ -1,0 +1,43 @@
+.container-columns {
+	display: flex;
+	flex-direction: column;
+}
+
+.container-rows{
+	display: flex;
+	flex-direction: row;
+}
+
+.container-columns-element-3{
+	margin-top: auto;
+	margin-bottom: auto;
+	min-height: 30%;
+}
+
+.container-rows-element-3{
+	margin-right: auto;
+	margin-left: auto;
+	min-width: 30%;
+}
+
+.left-edge{
+	display: flex;
+	align-items: flex-start;
+}
+
+.center-alignment{
+	display: flex;
+	align-items: center;
+}
+
+.left-edge{
+	display: flex;
+	align-items: flex-end;
+}
+
+
+.height-centering{
+	display: flex;
+	justify-content: center;
+}
+
