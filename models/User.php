@@ -100,4 +100,9 @@ class User extends \yii\db\ActiveRecord
     {
         return $this->hasMany(Video::className(), ['id' => 'videoId'])->viaTable('Rating', ['userId' => 'id']);
     }
+
+    public function validatePassword($password)
+    {
+        return $this->password === $password;
+    }
 }

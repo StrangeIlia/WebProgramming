@@ -48,11 +48,17 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'api/<controller>/<action>' => 'api/<controller>/<action>'
             ],
         ],
 
     ],
     'params' => $params,
+    'modules' => [
+        'api' => [
+            'class' => 'app\modules\api\ApiModule'
+        ]
+    ]
 ];
 
 if (YII_ENV_DEV) {

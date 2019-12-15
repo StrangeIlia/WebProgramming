@@ -29,4 +29,32 @@
 #nav a.router-link-exact-active {
   color: #42b983;
 }
+
+html{
+  height: 100%;
+}
+
+body{
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  margin: 0;
+}
+
+.content {
+  flex-grow: 1;
+}
+
+.header-site-name {
+  font-size: 30px;
+  font-family: "Times New Roman", Times, serif;
+  letter-spacing: 6px;
+  word-spacing: -5px;
+  color: #FFFFFF;
+  font-weight: normal;
+  text-decoration: none;
+  font-style: italic;
+  font-variant: normal;
+  text-transform: none;
+}
 </style>
