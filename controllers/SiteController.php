@@ -130,9 +130,4 @@ class SiteController extends Controller
     {
         return $this->render('registation');
     }
-
-    public  function sayHello($message = "Привет")
-    {
-        return $this->render('say', ['message' => $message]);
-    }
 }

@@ -2,7 +2,7 @@
 
 namespace app\modules\api;
 
-class ApiModule extends \yii\base\Model
+class ApiModule extends \yii\base\Module
 {
 
 }
