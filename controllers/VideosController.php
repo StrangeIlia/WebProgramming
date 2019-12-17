@@ -7,7 +7,7 @@ namespace app\controllers;
 use app\models\Video;
 use yii\web\Controller;
 
-class VideoController extends Controller
+class VideosController extends Controller
 {
     /**
      * @return string

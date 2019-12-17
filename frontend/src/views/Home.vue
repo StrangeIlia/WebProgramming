@@ -34,7 +34,7 @@
     },
 
     created() {
-      HTTP.get('/videos').then(response => (this.models = response.data))
+      HTTP.get('/videos').then(response => (this.videos = response.data))
     }
   }
 
