@@ -3,9 +3,8 @@
     <div class="album py-5">
       <div class="container">
         <div class="row">
-          <div v-for="video in videos" :key="video.id" >
+          <div v-for="video in videos" :key="video.id" class="video-item">
             <div class="col-md-3">
-              <a href="ContextPage.html">
                 <div class="card mb-4 shadow-sm">
                   <img src="src/img.jpg" alt = "Невозможно">
                   <div class = "card-body">
@@ -14,9 +13,21 @@
                     </div>
                   </div>
                 </div>
-              </a>
             </div>
           </div>
+
+          <div class="col-md-3">
+              <div class="card mb-4 shadow-sm">
+
+                <img src="src/img.jpg" alt = "Невозможно">
+                <div class = "card-body">
+                  <div class="card-text">
+                    Очень интересный фильм (нет)
+                  </div>
+                </div>
+              </div>
+          </div>
+
         </div>
       </div>
     </div>

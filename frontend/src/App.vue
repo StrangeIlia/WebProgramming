@@ -1,50 +1,38 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+  <div>
+
+    <div class = "content">
+      <header class="bg-dark" >
+        <div class = "navbar navbar-expand">
+          <div class = "navbar-site-name header-site-name">Кто - то там интертеймент</div>
+          <div><form id="search-form" class="style-score ytd"></form></div>
+          <div class="navbar-nav ml-auto">
+            <div class="content">
+              <a class="m-auto" href="LoginPage.html">
+                <button type="submit" class="btn btn-primary m-auto">Вход</button>
+              </a>
+              <a class="m-auto" href="RegistrationPage.html">
+                <button type="submit" class="btn btn-primary m-auto">Регистрация</button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <router-view/>
+
     </div>
-    <router-view/>
+
+    <footer class="text-mutex">
+      <div class="container">
+        <p class="float-right">Кто - то там интертеймент. Прав вообще нет</p>
+      </div>
+    </footer>
+
   </div>
 </template>
 
 <style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-
-html{
-  height: 100%;
-}
-
-body{
-  display: flex;
-  flex-direction: column;
-  min-height: 100%;
-  margin: 0;
-}
-
-.content {
-  flex-grow: 1;
-}
-
 .header-site-name {
   font-size: 30px;
   font-family: "Times New Roman", Times, serif;
@@ -58,3 +46,4 @@ body{
   text-transform: none;
 }
 </style>
+
