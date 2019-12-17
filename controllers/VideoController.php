@@ -4,7 +4,7 @@
 namespace app\controllers;
 
 
-use app\models\News;
+use app\models\Video;
 use yii\web\Controller;
 
 class VideoController extends Controller
@@ -14,9 +14,7 @@ class VideoController extends Controller
      */
     public function actionIndex()
     {
-        $models = News::find()
-            ->orderBy(['createdAt'=> SORT_DESC])
-            ->all();
+        $models = Video::find()->all();
 
         return $this->render('index',['models'=>$models]);
     }

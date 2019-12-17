@@ -23,7 +23,7 @@ class BaseController extends \yii\rest\Controller
                     'class' => \yii\filters\RateLimiter::className(),
                 ],
                 'cors' => [
-                    'class' => \yii\filters\Cors::className(),
+                    'class' => \yii\filters\Cors::class,
                 ]
             ]
         ];

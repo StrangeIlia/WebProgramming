@@ -8,5 +8,5 @@ use app\models\Video;
 
 class VideosController extends BaseActiveController
 {
-    public $modelClass = 'app\models\Videos';
+    public $modelClass = 'app\models\videos';
 }
