@@ -34,7 +34,7 @@ class UsersController extends BaseActiveController
             return['status'=>'success'];
 
 
-        else return $request;//return['status'=>'reject'];
+        return['status'=>'reject'];
     }
 
     /**

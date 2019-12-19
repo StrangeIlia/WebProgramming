@@ -61,7 +61,7 @@
                 if(okey){
 
                     let data = new FormData();
-                    data.append('login', this.login);
+                    data.append('username', this.login);
                     data.append('password', this.password);
                     data.append('rememberMe', this.rememberMe);
 
