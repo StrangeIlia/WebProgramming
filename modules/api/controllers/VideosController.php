@@ -4,6 +4,7 @@
 namespace app\modules\api\controllers;
 
 use app\models\Video;
+use yii\db\ActiveQuery;
 
 class VideosController extends BaseActiveController
 {
@@ -62,5 +63,17 @@ class VideosController extends BaseActiveController
             return['status'=>'success'];
         else
             return['status'=>'reject'];
+    }
+
+    /**
+     * Получить списко видео, которые понравились пользователю
+     * @return ActiveQuery
+     */
+    public function getFavoriteVideo()
+    {
+        $request = Yii::$app->request->post();
+        $user = $this->getUser($request);
+        if($user !== null)
+            return $user->getPlaylists();
     }
 }

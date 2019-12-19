@@ -3,12 +3,8 @@
 
 namespace app\modules\api\controllers;
 
-use app\models\LoginForm;
-use app\models\User;
 use Yii;
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
-use yii\web\Response;
+use app\models\User;
 
 class UsersController extends BaseActiveController
 {
@@ -23,31 +19,33 @@ class UsersController extends BaseActiveController
     }
 
     /**
+     * Ввод в аккаунт
      * @return array
      */
     public function actionLogin()
     {
-        $model = new LoginForm();
-
         $request = Yii::$app->request->post();
-        if ($model->load($request) && $model->login())
-            return['status'=>'success'];
-
-
-        return['status'=>'reject'];
+        $user = User::getUser($request);
+        if($user === null)
+            return ['status'=>'reject'];
+        else {
+            $user->createToken();
+            return [
+                'status' => 'success',
+                'authKey' => $user['authKey'],
+                'accessToken' > $user['accessToken'],
+            ];
+        }
     }
 
     /**
-     *
+     * Выход
      */
     public function actionLogout()
     {
-        Yii::$app->user->logout();
-    }
-
-    public function actionGet_load_video()
-    {
-        Yii::$app->user->logout();
-
+        $request = Yii::$app->request->post();
+        $user = User::getUser($request);
+        if($user !== null)
+            $user->removeToken();
     }
 }

@@ -10,22 +10,29 @@ let MainVue = new Vue({
   render: h => h(App),
 
   created() {
-    let data = new FormData();
-    HTTP.post('/users/login', data).then(response => {
+    let sendData = new FormData();
+    sendData.authKey = localStorage.authKey;
+    sendData.accessToken = localStorage.accessToken;
+    HTTP.post('/users/login', sendData).then(response => {
       if(response.data.status ==='success'){
-        this.successAuth = true;
-      }
-      else {
-        this.successAuth = false;
+        this.$data.login = response.login;
+        localStorage.authKey = response.authKey;
+        localStorage.accessToken = response.accessToken;
       }
     });
   },
 
   data(){
     return {
-      successAuth: false
+      login: ''
     }
   },
+
+  computed: {
+    successAuth : function () {
+      return this.$data.login !== '';
+    }
+  }
 });
 
 MainVue.$mount('#app')

@@ -45,6 +45,7 @@
       isRegOrAuth : function () {
         let isReg = this.$route.name === 'reg';
         let isAuth = this.$route.name === 'auth' ;
+
         return isReg || isAuth || this.successAuth;
       }
     }

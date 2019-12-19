@@ -2,8 +2,8 @@
 
 namespace app\models;
 
-use Yii;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "Ratings".
@@ -15,7 +15,7 @@ use yii\db\ActiveQuery;
  * @property User $users
  * @property Video $videos
  */
-class Rating extends \yii\db\ActiveRecord
+class Rating extends ActiveRecord
 {
     /**
      * {@inheritdoc}
