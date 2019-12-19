@@ -1,21 +1,26 @@
 <template>
-  <div>
-
-    <div class = "content">
+  <div class="my-body">
+    <div class = "my-content">
       <header class="bg-dark" >
         <div class = "navbar navbar-expand">
-          <div class = "navbar-site-name header-site-name">Кто - то там интертеймент</div>
+          <div class = "navbar-site-name my-header-site-name">Кто - то там интертеймент</div>
           <div><form id="search-form" class="style-score ytd"></form></div>
-          <div class="navbar-nav ml-auto">
+
+          <div v-if="!this.isRegOrAuth" class="navbar-nav ml-auto">
             <div class="content">
-              <a class="m-auto" href="LoginPage.html">
+              <router-link :to="{name:'auth', params:{}}">
                 <button type="submit" class="btn btn-primary m-auto">Вход</button>
-              </a>
-              <a class="m-auto" href="RegistrationPage.html">
+              </router-link>
+              <router-link :to="{name:'reg', params:{}}">
                 <button type="submit" class="btn btn-primary m-auto">Регистрация</button>
-              </a>
+              </router-link>
             </div>
           </div>
+
+          <div v-if="this.successAuth">
+
+          </div>
+
         </div>
       </header>
 
@@ -32,18 +37,16 @@
   </div>
 </template>
 
-<style>
-.header-site-name {
-  font-size: 30px;
-  font-family: "Times New Roman", Times, serif;
-  letter-spacing: 6px;
-  word-spacing: -5px;
-  color: #FFFFFF;
-  font-weight: normal;
-  text-decoration: none;
-  font-style: italic;
-  font-variant: normal;
-  text-transform: none;
-}
-</style>
+<script>
+  export default {
+    name: 'App',
 
+    computed:{
+      isRegOrAuth : function () {
+        let isReg = this.$route.name === 'reg';
+        let isAuth = this.$route.name === 'auth' ;
+        return isReg || isAuth || this.successAuth;
+      }
+    }
+  }
+</script>

@@ -32,7 +32,13 @@ class BaseActiveController extends ActiveController
             ],
             'cors'=>[
                 'class'=> Cors::class
-            ]
+            ],
+
         ];
+    }
+
+    public function getUrl()
+    {
+        return $_SERVER['HTTP_HOST'] . '/';
     }
 }

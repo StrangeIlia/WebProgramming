@@ -2,11 +2,8 @@
 
 namespace app\models;
 
-use Yii;
 use yii\base\InvalidConfigException;
-use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
-use yii\db\Expression;
 
 /**
  * This is the model class for table "Users".
@@ -17,6 +14,8 @@ use yii\db\Expression;
  * @property string $password пароль
  * @property string $createdAt когда создан
  * @property string $updatedAt когда обновлен
+ * @property string $authKey ключ авторизации
+ * @property string $accessToken токен
  *
  * @property Playlist[] $playlists
  * @property Rating[] $ratings
@@ -33,29 +32,15 @@ class User extends \yii\db\ActiveRecord
     }
 
     /**
-     * Добавляем инициализацию времени
-     */
-    public function behaviors()
-    {
-        return [
-            [
-                'class' => TimestampBehavior::className(),
-                'createdAtAttribute' => 'createdAt',
-                'updatedAtAttribute' => 'updatedAt',
-                'value' => new Expression('now()')
-            ]
-        ];
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['email', 'login', 'password', 'createdAt', 'updatedAt'], 'required'],
+            [['email', 'login', 'password', 'createdAt', 'updatedAt', 'authKey', 'accessToken'], 'required'],
             [['createdAt', 'updatedAt'], 'safe'],
             [['email', 'login', 'password'], 'string', 'max' => 30],
+            [['authKey', 'accessToken'], 'string', 'max' => 32],
             [['email'], 'unique'],
             [['login'], 'unique'],
         ];
@@ -73,13 +58,15 @@ class User extends \yii\db\ActiveRecord
             'password' => 'Password',
             'createdAt' => 'Created At',
             'updatedAt' => 'Updated At',
+            'authKey' => 'Auth Key',
+            'accessToken' => 'Access Token',
         ];
     }
 
     /**
      * @return ActiveQuery
      */
-    public function getPlaylist()
+    public function getPlaylists()
     {
         return $this->hasMany(Playlist::className(), ['author' => 'id']);
     }
@@ -87,7 +74,7 @@ class User extends \yii\db\ActiveRecord
     /**
      * @return ActiveQuery
      */
-    public function getRating()
+    public function getRatings()
     {
         return $this->hasMany(Rating::className(), ['userId' => 'id']);
     }
@@ -96,13 +83,8 @@ class User extends \yii\db\ActiveRecord
      * @return ActiveQuery
      * @throws InvalidConfigException
      */
-    public function getVideo()
+    public function getVideos()
     {
-        return $this->hasMany(Video::className(), ['id' => 'videoId'])->viaTable('Rating', ['userId' => 'id']);
-    }
-
-    public function validatePassword($password)
-    {
-        return $this->password === $password;
+        return $this->hasMany(Video::className(), ['id' => 'videoId'])->viaTable('Ratings', ['userId' => 'id']);
     }
 }

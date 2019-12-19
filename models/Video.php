@@ -2,12 +2,17 @@
 
 namespace app\models;
 
+use app\components\ImageHelper;
+use LocalFileHelper;
+use phpDocumentor\Reflection\Types\Boolean;
 use Yii;
+use yii\base\Exception;
 use yii\base\InvalidConfigException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "Videos".
@@ -124,5 +129,43 @@ class Video extends ActiveRecord
     public function getVideos()
     {
         return $this->hasMany(Video::className(), ['author' => 'id']);
+    }
+
+    /**
+     * @param bool $insert
+     * @return bool
+     * @throws Exception
+     */
+    public function beforeSave($insert)
+    {
+        if(parent::beforeSave($insert))
+        {
+            $this->loadVideo();
+            $this->loadPreview();
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function loadVideo()
+    {
+        $file = UploadedFile::getInstance($this, $this->path);
+        if($file===null) return;
+        $this->path = LocalFileHelper::createVideo($this->path);
+        $file->saveAs($this->path);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function loadPreview()
+    {
+        $file = UploadedFile::getInstance($this, $this->preview);
+        if($file===null) return;
+        $this->preview = LocalFileHelper::createPreview($this->preview);
+        $file->saveAs($this->preview);
     }
 }

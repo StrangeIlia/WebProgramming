@@ -3,31 +3,18 @@
     <div class="album py-5">
       <div class="container">
         <div class="row">
-          <div v-for="video in videos" :key="video.id" class="video-item">
-            <div class="col-md-3">
+          <div v-for="video in videos" :key="video.id" class="col-md-3">
+              <router-link :to="{name:'video', params:{id:video.id}}">
                 <div class="card mb-4 shadow-sm">
-                  <img src="src/img.jpg" alt = "Невозможно">
+                  <img :src="video.preview" alt = "Невозможно">
                   <div class = "card-body">
                     <div class="card-text">
                       {{video.name}}
                     </div>
                   </div>
                 </div>
-            </div>
+              </router-link>
           </div>
-
-          <div class="col-md-3">
-              <div class="card mb-4 shadow-sm">
-
-                <img src="src/img.jpg" alt = "Невозможно">
-                <div class = "card-body">
-                  <div class="card-text">
-                    Очень интересный фильм (нет)
-                  </div>
-                </div>
-              </div>
-          </div>
-
         </div>
       </div>
     </div>
