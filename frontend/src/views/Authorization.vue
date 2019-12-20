@@ -67,11 +67,12 @@
                     data.append('password', this.password);
                     data.append('rememberme', this.rememberMe);
 
-                    HTTP.post('/users/login', data)
+                    HTTP.post('/site/login', data)
                         .then(response => {
                             if(response.data.status === 'success'){
                                 localStorage.token = response.data.token;
                                 MainVue.username = this.username;
+                                HTTP.defaults.headers['Authorization'] = 'Bearer ' + localStorage.token;
                                 this.$router.push('/');
                             } else {
                                 MainVue.username = '';

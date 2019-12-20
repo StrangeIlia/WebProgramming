@@ -17,31 +17,30 @@ use yii\filters\ContentNegotiator;
 
 class BaseActiveController extends ActiveController
 {
-    public function  behaviors()
+    public function behaviors()
     {
-        return [
-            'contentNegotiator'=>[
-                'class'=>ContentNegotiator::className(),
-                'formats'=>[
-                    'application/json'=> Response::FORMAT_JSON,
-                    'application/xml'=> Response::FORMAT_XML,
+        $behaviors = [
+            'contentNegotiator' => [
+                'class' => ContentNegotiator::className(),
+                'formats' => [
+                    'application/json' => Response::FORMAT_JSON,
+                    'application/xml' => Response::FORMAT_XML,
                 ],
-
-            ]  ,
-            'verbFilter'=>[
-                'class'=> VerbFilter::className(),
-                'actions'=>$this->verbs(),
-
             ],
-            'rateLimiter'=>[
-                'class'=> RateLimiter::className(),
+            'verbFilter' => [
+                'class' => VerbFilter::className(),
+                'actions' => $this->verbs(),
             ],
-            'cors'=>[
-                'class'=> Cors::class
+            'rateLimiter' => [
+                'class' => RateLimiter::className(),
+            ],
+            'corsFilter' => [
+                'class' => Cors::className(),
             ],
             'bearerAuth' => [
                 'class' => HttpBearerAuth::className(),
             ],
         ];
+        return $behaviors;
     }
 }

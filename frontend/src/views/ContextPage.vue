@@ -39,7 +39,7 @@
         created() {
             var id = this.$route.params.id;
             this.video.message = id;
-            HTTP.get('/videos/selected_video?id=' + id).then(response => (this.video = response.data))
+            HTTP.get('/videos/view?id=' + id).then(response => (this.video = response.data))
         }
     }
 

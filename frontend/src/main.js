@@ -15,11 +15,20 @@ export let MainVue = new Vue({
   render: h => h(App),
 
   created() {
-    HTTP.post('/users/get_username').then(response => {
+    HTTP.get('/site/get_username').then(response => {
       if(response.data.username !== null)
           this.username = response.data.username;
-    });
+    }).catch(() => delete localStorage.token);
+
+
+  },
+
+  methods: {
+    successAuth : function () {
+      return this.username !== '';
+    }
   }
+
 });
 
 MainVue.$mount('#app');

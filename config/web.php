@@ -52,6 +52,7 @@ $config = [
             'showScriptName' => false,
             'enableStrictParsing'=>true,
             'rules' => [
+                'api/<controller>' => 'api/<controller>/index',
                 'api/<controller>/<action>' => 'api/<controller>/<action>'
             ],
         ],

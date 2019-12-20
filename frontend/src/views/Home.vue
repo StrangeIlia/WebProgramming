@@ -27,12 +27,15 @@
     name: 'Videos',
     data () {
       return{
-        videos: []
+        videos: [],
       }
     },
 
     created() {
-      HTTP.get('/videos/get_all_video').then(response => (this.videos = response.data))
+
+
+      HTTP.get('/videos')
+              .then(response => {this.videos = response.data;});
     }
   }
 

@@ -60,19 +60,17 @@
         return MainVue.username;
       },
       successAuth : function () {
-        return this.username !== '';
-      },
-      token: function () {
-        return localStorage.token;
+        return MainVue.successAuth();
       }
     },
 
     methods: {
       logout : function () {
-        HTTP.post('/users/logout').then(response => {
+        HTTP.post('/site/logout').then(response => {
           if(response.data.status === 'success'){
             MainVue.username = '';
             delete localStorage.token;
+            delete HTTP.defaults.headers['Authorization'];
           }
         });
       }

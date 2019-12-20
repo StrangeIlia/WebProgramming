@@ -2,6 +2,7 @@
 
 namespace app\modules\api\controllers;
 
+use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 use yii\filters\Cors;
 use yii\filters\RateLimiter;
@@ -20,18 +21,19 @@ class BaseController extends Controller
                     'application/json'=> Response::FORMAT_JSON,
                     'application/xml'=> Response::FORMAT_XML,
                 ],
-
             ]  ,
             'verbFilter'=>[
                 'class'=> VerbFilter::className(),
                 'actions'=>$this->verbs(),
-
             ],
             'rateLimiter'=>[
                 'class'=> RateLimiter::className(),
             ],
             'cors'=>[
-                'class'=> Cors::class
+                'class'=> Cors::classname()
+            ],
+            'bearerAuth' => [
+                'class' => HttpBearerAuth::className(),
             ]
         ];
     }

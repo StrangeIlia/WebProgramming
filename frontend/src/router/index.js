@@ -12,10 +12,6 @@ import UserPage from "../views/UserPage";
 
 Vue.use(VueRouter);
 
-Vue.prototype.successAuth = function () {
-  return this.prototype.login !== '';
-};
-
 const routes = [
   {
     path: '/',
@@ -65,7 +61,6 @@ const routes = [
 ];
 
 const router = new VueRouter({
-  mode: 'history',
   routes
 });
 
