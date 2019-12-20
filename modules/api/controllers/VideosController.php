@@ -3,33 +3,23 @@
 
 namespace app\modules\api\controllers;
 
+use Yii;
+use app\models\User;
 use app\models\Video;
 use yii\db\ActiveQuery;
+use yii\base\InvalidConfigException;
+use yii\db\ActiveRecord;
 
 class VideosController extends BaseActiveController
 {
     public $modelClass = 'app\models\Video';
-    public $defaultAction = 'default';
 
-    /***
-     * @param Video $video
+    /**
+     * @return array|ActiveRecord[]
      */
-    public function addUrl($video)
+    public function actionGet_all_video()
     {
-        if($video === null) return;
-        $video->path = $this->getUrl() . $video->path;
-        $video->preview = $this->getUrl() . $video->preview;
-    }
-
-    /***
-     * @return array|\yii\db\ActiveRecord[]
-     */
-    public function actionDefault()
-    {
-        $videos = Video::find()->all();
-        foreach ($videos as $video)
-            $this->addUrl($video);
-        return $videos;
+        return Video::find()->all();
     }
 
     /***
@@ -38,20 +28,9 @@ class VideosController extends BaseActiveController
      */
     public function actionSelected_video($id)
     {
-        $video = Video::findOne($id);
-        $this->addUrl($video);
-        return $video;
+        return Video::findOne($id);
     }
 
-    /***
-     * @return array
-     */
-    public  function verbs()
-    {
-        return [
-            'add_video'=>['POST','OPTIONS']
-        ];
-    }
 
     /***
      * @param Video $video
@@ -66,14 +45,24 @@ class VideosController extends BaseActiveController
     }
 
     /**
+     * @param $data
+     * @return User|null
+     */
+    private static function getUser($data)
+    {
+        return User::findByUsername($data['username']);
+    }
+
+    /**
      * Получить списко видео, которые понравились пользователю
      * @return ActiveQuery
+     * @throws InvalidConfigException
      */
     public function getFavoriteVideo()
     {
         $request = Yii::$app->request->post();
-        $user = $this->getUser($request);
+        $user = static::getUser($request);
         if($user !== null)
-            return $user->getPlaylists();
+            return $user->getFavoriteVideos();
     }
 }

@@ -5,32 +5,33 @@
         <div class = "navbar navbar-expand">
           <div class = "navbar-site-name my-header-site-name">Кто - то там интертеймент</div>
           <div><form id="search-form" class="style-score ytd"></form></div>
-
-          <div v-if="!this.isRegOrAuth" class="navbar-nav ml-auto">
-            <div class="content">
-              <router-link :to="{name:'auth', params:{}}">
-                <button type="submit" class="btn btn-primary m-auto">Вход</button>
-              </router-link>
-              <router-link :to="{name:'reg', params:{}}">
-                <button type="submit" class="btn btn-primary m-auto">Регистрация</button>
-              </router-link>
+          <div class="navbar-nav ml-auto">
+            <div v-if="!this.isRegOrAuth">
+              <div class="content">
+                <router-link :to="{name:'auth', params:{}}">
+                  <button type="submit" class="btn btn-primary m-auto">Вход</button>
+                </router-link>
+                <router-link :to="{name:'reg', params:{}}">
+                  <button type="submit" class="btn btn-primary m-auto">Регистрация</button>
+                </router-link>
+              </div>
+            </div>
+            <div v-if="this.successAuth">
+              <div class="dropdown">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  {{this.username}}
+                </button>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" href="#">Добавить видео</a>
+                  <a class="dropdown-item" href="#">Добавить плейлист</a>
+                  <a @click="logout" class="dropdown-item" href="#">Выход</a>
+                </div>
+              </div>
             </div>
           </div>
-
-          <div v-if="this.successAuth" class="navbar-nav ml-auto">
-            <div class="content">
-             <router-link :to="{name:'/', params:{}}">
-                <button type="submit" class="btn btn-primary m-auto">{{login}}</button>
-              </router-link>
-              <button @click="logout" type="submit" class="btn btn-primary m-auto">Выход</button>
-            </div>
-          </div>
-
         </div>
       </header>
-
       <router-view/>
-
     </div>
 
     <footer class="text-mutex">
@@ -49,31 +50,36 @@
   export default {
     name: 'App',
 
+    data() {
+      return {
+        mainMenuOptions : [
+        'Добавить видео',
+         'Выход'
+        ]
+      }
+    },
+
     computed:{
       isRegOrAuth : function () {
         let isReg = this.$route.name === 'reg';
         let isAuth = this.$route.name === 'auth';
         return isReg || isAuth || this.successAuth;
       },
-      login : function(){
-        return MainVue.userInfo.login;
+      username : function(){
+        return MainVue.username;
       },
       successAuth : function () {
-        return this.login !== '';
+        return this.username !== '';
       },
     },
 
     methods: {
       logout : function () {
-        let sendData = new FormData();
-        sendData.authKey = this.$data.authKey;
-        sendData.accessToken = this.$data.accessToken;
-        HTTP.post('/users/logout', sendData).then(() => {
-          MainVue.userInfo.login = '';
-          MainVue.userInfo.authKey = '';
-          MainVue.userInfo.accessToken = '';
-          localStorage.authKey = '';
-          localStorage.accessToken = '';
+        HTTP.post('/users/logout').then(response => {
+          if(response.data.status === 'success'){
+            MainVue.username = '';
+            delete localStorage.token;
+          }
         });
       }
     }

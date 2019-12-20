@@ -3,14 +3,22 @@
 
 namespace app\modules\api\controllers;
 
-use Yii;
 use app\models\User;
+use Yii;
+use app\models\LoginForm;
+
 
 class UsersController extends BaseActiveController
 {
     public $modelClass = 'app\models\User';
 
-    public  function verbs()
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        return $behaviors;
+    }
+
+    public function verbs()
     {
         return [
             'login'=>['POST','OPTIONS'],
@@ -24,18 +32,21 @@ class UsersController extends BaseActiveController
      */
     public function actionLogin()
     {
+        $model = new LoginForm();
         $request = Yii::$app->request->post();
-        $user = User::getUser($request);
-        if($user === null)
-            return ['status'=>'reject'];
-        else {
-            $user->createToken();
+        if ($model->load($request, '') && $model->login()) {
             return [
                 'status' => 'success',
-                'authKey' => $user['authKey'],
-                'accessToken' => $user['accessToken'],
+                'token' => $model->getUser()['accessToken'],
             ];
         }
+
+        return ['status', 'reject'];
+    }
+
+    public function actionGet_username()
+    {
+        return ['username' => Yii::$app->user->getIdentity()['username']];
     }
 
     /**
@@ -43,9 +54,9 @@ class UsersController extends BaseActiveController
      */
     public function actionLogout()
     {
-        $request = Yii::$app->request->post();
-        $user = User::getUser($request);
-        if($user !== null)
-            $user->removeToken();
+        if(Yii::$app->user->logout(false))
+            return ['status' => 'success'];
+        else
+            return ['status' => 'reject'];
     }
 }

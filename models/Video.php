@@ -147,6 +147,15 @@ class Video extends ActiveRecord
         return false;
     }
 
+    public function toArray(array $fields = [], array $expand = [], $recursive = true)
+    {
+        $data = parent::toArray($fields, $expand, $recursive);
+
+        $data['path'] = Yii::$app->urlManager->hostInfo . '/' . $data['path'];
+        $data['preview'] = Yii::$app->urlManager->hostInfo . '/' . $data['preview'];
+        return $data;
+    }
+
     /**
      * @throws Exception
      */

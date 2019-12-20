@@ -1,17 +1,17 @@
 <template>
     <div class="my-container">
         <div class="col-md-4">
-            <form @submit="method_login">
+            <form @submit="login">
                 <div>{{errors.method}}</div>
                 <div class="form-group">
-                    <label for="login">Логин</label>
-                    <input id="login" type="text" class="form-control" placeholder="Введите ваш логин" v-model="login">
-                    <div class="error">{{errors.login}}</div>
+                    <label for="username">Логин</label>
+                    <input id="username" type="text" class="form-control" placeholder="Введите ваш логин" v-model="username">
+                    <div class="error">{{errors.username}}</div>
                 </div>
                 <div class="form-group">
                     <label for="password">Пароль</label>
                     <input id="password" type="password" class="form-control" placeholder="Введите пароль" v-model="password">
-                    <div class="error">{{errors.login}}</div>
+                    <div class="error">{{errors.username}}</div>
                 </div>
                 <div class="form-group">
                     <label><input type="checkbox" name="checkbox" v-model="rememberMe">Запомнить меня</label>
@@ -38,11 +38,11 @@
 
         data(){
             return {
-                login: "",
+                username: "",
                 password: "",
                 rememberMe: false,
                 errors: {
-                    login: "",
+                    username: "",
                     password: "",
                     method: ""
                 }
@@ -50,9 +50,9 @@
         },
 
         methods: {
-            method_login : function (e) {
+            login : function (e) {
                 let okay = true;
-                if(!this.login || this.login.trim().length === 0){
+                if(!this.username || this.username.trim().length === 0){
                     this.errors.username = 'Введите логин';
                     okay = false;
                 }
@@ -63,27 +63,31 @@
 
                 if(okay){
                     let data = new FormData();
-                    data.append('login', this.login);
+                    data.append('username', this.username);
                     data.append('password', this.password);
+                    data.append('rememberme', this.rememberMe);
 
                     HTTP.post('/users/login', data)
                         .then(response => {
                             if(response.data.status === 'success'){
-                                if(this.rememberMe)
-                                {
-                                    localStorage.authKey = response.data.authKey;
-                                    localStorage.accessToken = response.data.accessToken;
-                                }
-                                MainVue.userInfo.login = this.login;
-                                MainVue.userInfo.authKey = response.data.authKey;
-                                MainVue.userInfo.accessToken = response.data.accessToken;
+                                localStorage.token = response.data.token;
+                                MainVue.username = this.username;
                                 this.$router.push('/');
                             } else {
-                                this.errors.method = 'Неверный логин или пароль';
+                                MainVue.username = '';
+                                delete localStorage.token;
+                                this.errors.method = response.data;
                             }
-                        });
+                        }).catch(() => this.errors.method = 'Нет отклика от сервера');
                 }
 
+                e.preventDefault();
+            },
+
+            clearError : function (e) {
+                this.errors.username = '';
+                this.errors.method = '';
+                this.errors.password = '';
                 e.preventDefault();
             }
         }

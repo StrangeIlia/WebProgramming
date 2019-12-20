@@ -8,6 +8,7 @@ import AddVideo from  "../views/AddVideo"
 import FavoriteVideos from "../views/FavoriteVideos";
 import LoadedVideos from "../views/LoadedVideos";
 import Playlists from "../views/Playlists";
+import UserPage from "../views/UserPage";
 
 Vue.use(VueRouter);
 
@@ -56,6 +57,11 @@ const routes = [
     name: 'add_video',
     component: AddVideo
   },
+  {
+    path: '/user_page',
+    name: 'user_page',
+    component: UserPage
+  }
 ];
 
 const router = new VueRouter({

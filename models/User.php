@@ -2,15 +2,19 @@
 
 namespace app\models;
 
-use yii\base\InvalidConfigException;
+use yii\base\Exception;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+use yii\base\InvalidConfigException;
+
 
 /**
  * This is the model class for table "Users".
  *
  * @property int $id Id
  * @property string $email email
- * @property string $login логин
+ * @property string $username логин
  * @property string $password пароль
  * @property string $createdAt когда создан
  * @property string $updatedAt когда обновлен
@@ -21,10 +25,8 @@ use yii\db\ActiveQuery;
  * @property Rating[] $ratings
  * @property Video[] $videos
  */
-class User extends \yii\db\ActiveRecord
+class User extends ActiveRecord implements IdentityInterface
 {
-    static $setCharacter = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
     /**
      * {@inheritdoc}
      */
@@ -39,37 +41,13 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['email', 'login', 'password', 'createdAt', 'updatedAt', 'authKey', 'accessToken'], 'required'],
+            [['email', 'username', 'password', 'createdAt', 'updatedAt', 'authKey', 'accessToken'], 'required'],
             [['createdAt', 'updatedAt'], 'safe'],
-            [['email', 'login', 'password'], 'string', 'max' => 30],
+            [['email', 'username', 'password'], 'string', 'max' => 30],
             [['authKey', 'accessToken'], 'string', 'max' => 32],
             [['email'], 'unique'],
-            [['login'], 'unique'],
-            [['accessToken'], 'unique']
+            [['username'], 'unique']
         ];
-    }
-
-    /**
-     * Возращает объект пользователя, по токену или логину
-     * @param $data
-     * @return User|null
-     */
-    public static function getUser($data)
-    {
-        // Если пользователь передал токен
-        if(isset($data['authKey']) && isset($data['accessToken']))
-        {
-            $user = User::findByAccessToken($data['accessToken']);
-            if($user !== null && $user->validateAuthKey($data['authKey']))
-                return $user;
-        }
-        // Если пользователь передал логин
-        else if(isset($data['login']) && isset($data['password'])){
-            $user = User::findByLogin($data['login']);
-            if ($user !== null && $user->validatePassword($data['password']))
-                return $user;
-        }
-        return null;
     }
 
     /**
@@ -80,7 +58,7 @@ class User extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'email' => 'Email',
-            'login' => 'Login',
+            'username' => 'Username',
             'password' => 'Password',
             'createdAt' => 'Created At',
             'updatedAt' => 'Updated At',
@@ -118,83 +96,121 @@ class User extends \yii\db\ActiveRecord
             where(['rating'] > 0);
     }
 
+
     /**
-     * Генерирует рандомную строку заданнной длины по набору символов
-     * @param $setCharacter
-     * @param $strLength
-     * @return string
+     * Finds an identity by the given ID.
+     * @param string|int $id the ID to be looked for
+     * @return IdentityInterface|null the identity object that matches the given ID.
+     * Null should be returned if such an identity cannot be found
+     * or the identity is not in an active state (disabled, deleted, etc.)
      */
-    private function generate_string($strLength)
+    public static function findIdentity($id)
     {
-        $randomStr = '';
-        $countCharacter = strlen(User::$setCharacter);
-        for($i = 0; $i < $strLength; ++$i)
-            $randomStr .= User::$setCharacter[mt_rand(0, $countCharacter - 1)];
-        return $randomStr;
+        return static::findOne($id);
     }
 
     /**
-     * Генерирует токен, возращает ключ авторизации и токен
-     * @return array
+     * Finds an identity by the given token.
+     * @param mixed $token the token to be looked for
+     * @param mixed $type the type of the token. The value of this parameter depends on the implementation.
+     * For example, [[\yii\filters\auth\HttpBearerAuth]] will set this parameter to be `yii\filters\auth\HttpBearerAuth`.
+     * @return IdentityInterface|null the identity object that matches the given token.
+     * Null should be returned if such an identity cannot be found
+     * or the identity is not in an active state (disabled, deleted, etc.)
      */
-    public function createToken()
+    public static function findIdentityByAccessToken($token, $type = null)
     {
-        $this->authKey = $this->generate_string(32);
-        $this->accessToken = $this->generate_string(32);
-        return [
-            'authKey' => $this->authKey,
-            'accessToken' => $this->accessToken
-        ];
+        return static::findOne(['accessToken'=> $token]);
     }
 
     /**
-     * Очищает информацию по токену
+     * Returns an ID that can uniquely identify a user identity.
+     * @return string|int an ID that uniquely identifies a user identity.
      */
-    public function removeToken()
+    public function getId()
     {
-        $this->authKey = '';
-        $this->accessToken = '';
+        return $this->id;
     }
 
     /**
-     * Поиск пользователя по токену
-     * @param $token
-     * @return static|null
+     * Returns a key that can be used to check the validity of a given identity ID.
+     *
+     * The key should be unique for each individual user, and should be persistent
+     * so that it can be used to check the validity of the user identity.
+     *
+     * The space of such keys should be big enough to defeat potential identity attacks.
+     *
+     * This is required if [[User::enableAutoLogin]] is enabled. The returned key will be stored on the
+     * client side as a cookie and will be used to authenticate user even if PHP session has been expired.
+     *
+     * Make sure to invalidate earlier issued authKeys when you implement force user logout, password change and
+     * other scenarios, that require forceful access revocation for old sessions.
+     *
+     * @return string a key that is used to check the validity of a given identity ID.
+     * @see validateAuthKey()
      */
-    public static function findByAccessToken($token)
+    public function getAuthKey()
     {
-        if($token === '' ) return null;
-        return User::findOne(['accessToken' => $token]);
+        return $this->authKey;
     }
 
     /**
-     * Валидация по ключю авторизации
-     * @param $authKey
-     * @return bool
+     * Validates the given auth key.
+     *
+     * This is required if [[User::enableAutoLogin]] is enabled.
+     * @param string $authKey the given auth key
+     * @return bool whether the given auth key is valid.
+     * @see getAuthKey()
      */
     public function validateAuthKey($authKey)
     {
-        return $this->authKey === $authKey;
+        return $this->authKey == $authKey;
     }
 
     /**
      * Поиск пользователя по логину
-     * @param string login
-     * @return static|null
+     * @param $username
+     * @return User|null
      */
-    public static function findByLogin($login)
+    public static function findByUsername($username)
     {
-        if($login === '') return null;
-        return User::findOne(['login' => $login]);
+        return static::findOne(['username' => $username]);
     }
 
     /**
-     * Валидация по паролю
+     * Поиск пользователя по email
+     * @param $email
+     * @return User|null
+     */
+    public static function findByEmail($email)
+    {
+        return static::findOne(['email' => $email]);
+    }
+
+    /**
      * @param $password
      * @return bool
      */
     public function validatePassword($password)
     {
         return $this->password === $password;
+    }
+
+    /**
+     * Выдача токена и ключа авторизации
+     * @param $insert
+     * @return bool
+     * @throws Exception
+     */
+    public function beforeSave($insert)
+    {
+        if(!parent::beforeSave($insert)){
+            return false;
+        }
+        if($insert){
+            $this->authKey = \Yii::$app->security->generateRandomString();
+            $this->accessToken = \Yii::$app->security->generateRandomString();
+        }
+        return true;
     }
 }

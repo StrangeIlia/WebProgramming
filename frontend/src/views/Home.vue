@@ -32,7 +32,7 @@
     },
 
     created() {
-      HTTP.get('/videos').then(response => (this.videos = response.data))
+      HTTP.get('/videos/get_all_video').then(response => (this.videos = response.data))
     }
   }
 
