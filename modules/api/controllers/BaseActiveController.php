@@ -2,13 +2,18 @@
 
 namespace app\modules\api\controllers;
 
+use app\models\User;
+use yii\filters\AccessControl;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBasicAuth;
+use yii\web\Response;
+use yii\filters\Cors;
+use yii\filters\VerbFilter;
+use yii\filters\RateLimiter;
+use yii\rest\ActiveController;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
-use yii\filters\Cors;
-use yii\filters\RateLimiter;
-use yii\filters\VerbFilter;
-use yii\rest\ActiveController;
-use yii\web\Response;
+
 
 class BaseActiveController extends ActiveController
 {
@@ -34,11 +39,9 @@ class BaseActiveController extends ActiveController
             'cors'=>[
                 'class'=> Cors::class
             ],
+            'bearerAuth' => [
+                'class' => HttpBearerAuth::className(),
+            ],
         ];
-    }
-
-    public function getUrl()
-    {
-        return $_SERVER['HTTP_HOST'] . '/';
     }
 }

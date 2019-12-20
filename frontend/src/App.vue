@@ -50,15 +50,6 @@
   export default {
     name: 'App',
 
-    data() {
-      return {
-        mainMenuOptions : [
-        'Добавить видео',
-         'Выход'
-        ]
-      }
-    },
-
     computed:{
       isRegOrAuth : function () {
         let isReg = this.$route.name === 'reg';
@@ -71,6 +62,9 @@
       successAuth : function () {
         return this.username !== '';
       },
+      token: function () {
+        return localStorage.token;
+      }
     },
 
     methods: {

@@ -9,10 +9,29 @@ use app\models\Video;
 use yii\db\ActiveQuery;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveRecord;
+use yii\filters\AccessControl;
 
 class VideosController extends BaseActiveController
 {
     public $modelClass = 'app\models\Video';
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['access'] = [
+            'class' => AccessControl::className(),
+            'only' => ['get_all_video'],
+            'rules' => [
+                [
+                    'allow' => true,
+                    'actions' => ['get_all_video', 'selected_video'],
+                    'roles' => ['?'],
+                ],
+            ],
+        ];
+
+        return $behaviors;
+    }
 
     /**
      * @return array|ActiveRecord[]
