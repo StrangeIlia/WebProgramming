@@ -15,10 +15,10 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\filters\ContentNegotiator;
 
 /**
- * Class BaseActiveController.
- * Базовый контроллер.
+ * Class ActiveAuthController.
+ * Контроллер для авторизованных запросов.
  */
-class BaseActiveController extends ActiveController
+class ActiveAuthController extends ActiveController
 {
 	public function behaviors()
 	{
@@ -41,7 +41,10 @@ class BaseActiveController extends ActiveController
 			],
 			'cors' => [
 				'class' => Cors::class
-			]
+			],
+			'bearerAuth' => [
+				'class' => HttpBearerAuth::className(),
+			],
 		];
 	}
 }

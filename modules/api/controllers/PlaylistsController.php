@@ -1,12 +1,12 @@
 <?php
 
-
 namespace app\modules\api\controllers;
 
-
+use app\models\User;
+use Yii;
 use yii\db\ActiveQuery;
 
-class PlaylistsController extends BaseActiveController
+class PlaylistsController extends ActiveAuthController
 {
     public $modelClass = 'app\models\Playlist';
 
@@ -16,11 +16,9 @@ class PlaylistsController extends BaseActiveController
      */
     public function getPlaylists()
     {
-        $request = Yii::$app->request->post();
-        $user = $this->getUser($request);
-        if($user !== null)
-            return $user->getPlaylists();
-        else
-            return [];
+    	/** @var $user User */
+    	$user = Yii::$app->user->identity;
+
+        return $user->getPlaylists()->all();
     }
 }
