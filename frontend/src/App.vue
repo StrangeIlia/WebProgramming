@@ -17,8 +17,13 @@
             </div>
           </div>
 
-          <div v-if="this.successAuth">
-
+          <div v-if="this.successAuth" class="navbar-nav ml-auto">
+            <div class="content">
+             <router-link :to="{name:'/', params:{}}">
+                <button type="submit" class="btn btn-primary m-auto">{{login}}</button>
+              </router-link>
+              <button @click="logout" type="submit" class="btn btn-primary m-auto">Выход</button>
+            </div>
           </div>
 
         </div>
@@ -38,16 +43,41 @@
 </template>
 
 <script>
+  import {HTTP} from "./components/http";
+  import {MainVue} from "./main";
+
   export default {
     name: 'App',
 
     computed:{
       isRegOrAuth : function () {
         let isReg = this.$route.name === 'reg';
-        let isAuth = this.$route.name === 'auth' ;
-
+        let isAuth = this.$route.name === 'auth';
         return isReg || isAuth || this.successAuth;
+      },
+      login : function(){
+        return MainVue.userInfo.login;
+      },
+      successAuth : function () {
+        return this.login !== '';
+      },
+    },
+
+    methods: {
+      logout : function () {
+        let sendData = new FormData();
+        sendData.authKey = this.$data.authKey;
+        sendData.accessToken = this.$data.accessToken;
+        HTTP.post('/users/logout', sendData).then(() => {
+          MainVue.userInfo.login = '';
+          MainVue.userInfo.authKey = '';
+          MainVue.userInfo.accessToken = '';
+          localStorage.authKey = '';
+          localStorage.accessToken = '';
+        });
       }
     }
+
+
   }
 </script>

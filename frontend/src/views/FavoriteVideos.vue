@@ -1,13 +1,10 @@
 <template>
-    
+    <div> Hello </div>
 </template>
 
 <script>
     export default {
-        name: "LikedVideos"
+        name: "FavoriteVideos"
     }
 </script>
 
-<style scoped>
-
-</style>

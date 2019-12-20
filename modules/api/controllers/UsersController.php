@@ -33,7 +33,7 @@ class UsersController extends BaseActiveController
             return [
                 'status' => 'success',
                 'authKey' => $user['authKey'],
-                'accessToken' > $user['accessToken'],
+                'accessToken' => $user['accessToken'],
             ];
         }
     }

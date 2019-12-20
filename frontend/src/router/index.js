@@ -5,11 +5,15 @@ import ContextPage from "../views/ContextPage";
 import Auth from "../views/Authorization"
 import Reg from  "../views/Registration"
 import AddVideo from  "../views/AddVideo"
-import LikedVideos from "../views/LikedVideos";
+import FavoriteVideos from "../views/FavoriteVideos";
 import LoadedVideos from "../views/LoadedVideos";
 import Playlists from "../views/Playlists";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
+
+Vue.prototype.successAuth = function () {
+  return this.prototype.login !== '';
+};
 
 const routes = [
   {
@@ -33,14 +37,9 @@ const routes = [
     component: Reg
   },
   {
-    path: "/add_video",
-    name: 'add_video',
-    component: AddVideo
-  },
-  {
-    path: "/licked_videos",
-    name: 'licked_videos',
-    component: LikedVideos
+    path: "/favorite_videos",
+    name: 'favorite_videos',
+    component: FavoriteVideos
   },
   {
     path: "/loaded_videos",
@@ -51,11 +50,16 @@ const routes = [
     path: "/user_playlists",
     name: 'user_playlists',
     component: Playlists
-  }
-]
+  },
+  {
+    path: "/add_video",
+    name: 'add_video',
+    component: AddVideo
+  },
+];
 
 const router = new VueRouter({
   routes
-})
+});
 
 export default router
