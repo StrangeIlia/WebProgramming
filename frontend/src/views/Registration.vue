@@ -5,6 +5,7 @@
                 <div class="form-group">
                     <label for="login">Логин</label>
                     <input id="login" type="text" class="form-control" placeholder="Введите ваш логин">
+                    <div class="error" v-if="invalidUserName">Логин не может быть пустым!!!</div>
                 </div>
                 <div class="form-group">
                     <label for="email">Адрес электронной почты</label>
@@ -32,5 +33,70 @@
 </template>
 
 <script>
+    import { HTTP } from "../components/http";
+    import { MainVue } from "../main";
+    import required from "vuelidate/src/validators/required";
+    import maxLength from "vuelidate/src/validators/maxLength";
 
+    export default {
+        name: 'Authorization',
+
+        data(){
+            return {
+                username: "",
+                email: "",
+                password: "",
+                rememberMe: false,
+                errors: {
+                    username: "",
+                    password: "",
+                    method: ""
+                }
+            }
+        },
+
+        validations: {
+            username: {
+                required,
+                maxLength: maxLength(30)
+            },
+            password: {
+                required,
+                maxLength: maxLength(30)
+            }
+        },
+
+        methods: {
+            login : function (e) {
+                this.$v.$touch();
+                if(this.$v.$invalid()) {
+                      HTTP.post('/site/login', {
+                          username: this.username,
+                          password: this.password,
+                          rememberme: this.rememberMe
+                      })
+                        .then(response => {
+                            if(response.data.status === 'success'){
+                                localStorage.token = response.data.token;
+                                MainVue.username = this.username;
+                                HTTP.defaults.headers['Authorization'] = 'Bearer ' + localStorage.token;
+                                this.$router.push('/');
+                            } else {
+                                MainVue.username = '';
+                                delete localStorage.token;
+                                this.errors.method = response.data;
+                            }
+                        }).catch(() => this.errors.method = 'Нет отклика от сервера');
+                }
+                 e.preventDefault();
+            },
+
+            clearError : function (e) {
+                this.errors.username = '';
+                this.errors.method = '';
+                this.errors.password = '';
+                e.preventDefault();
+            }
+        }
+    }
 </script>

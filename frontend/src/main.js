@@ -2,8 +2,11 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import {HTTP} from "./components/http";
+import Vuelidate from "vuelidate/src";
 
 Vue.config.productionTip = false;
+
+Vue.use(Vuelidate);
 
 export let MainVue = new Vue({
   name: 'Main',

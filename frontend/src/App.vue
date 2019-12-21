@@ -22,8 +22,10 @@
                   {{this.username}}
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" href="#">Добавить видео</a>
-                  <a class="dropdown-item" href="#">Добавить плейлист</a>
+                  <router-link :to="{name: 'add_video', params:{}}">
+                    <a class="dropdown-item">Добавить видео</a>
+                  </router-link>
+                  <a class="dropdown-item">Добавить плейлист</a>
                   <a @click="logout" class="dropdown-item" href="#">Выход</a>
                 </div>
               </div>

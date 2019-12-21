@@ -6,12 +6,12 @@
                 <div class="form-group">
                     <label for="username">Логин</label>
                     <input id="username" type="text" class="form-control" placeholder="Введите ваш логин" v-model="username">
-                    <div class="error">{{errors.username}}</div>
+                    <div class="error" v-if="invalidUserName">Логин не может быть пустым!!!</div>
                 </div>
                 <div class="form-group">
                     <label for="password">Пароль</label>
                     <input id="password" type="password" class="form-control" placeholder="Введите пароль" v-model="password">
-                    <div class="error">{{errors.username}}</div>
+                    <div class="error" v-if="invalidPassword">Пароль не может быть пустым!!!</div>
                 </div>
                 <div class="form-group">
                     <label><input type="checkbox" name="checkbox" v-model="rememberMe">Запомнить меня</label>
@@ -32,6 +32,8 @@
 <script>
     import { HTTP } from "../components/http";
     import {MainVue} from "../main";
+    import required from "vuelidate/src/validators/required";
+    import maxLength from "vuelidate/src/validators/maxLength";
 
     export default {
         name: 'Authorization',
@@ -42,32 +44,41 @@
                 password: "",
                 rememberMe: false,
                 errors: {
-                    username: "",
-                    password: "",
                     method: ""
                 }
             }
         },
 
+        computed: {
+            invalidUserName : function(){
+                return this.$v.username.$anyError && !this.$v.username.required;
+            },
+
+            invalidPassword : function(){
+                return this.$v.password.$anyError && !this.$v.password.required;
+            },
+        },
+
+        validations: {
+            username: {
+                required,
+                maxLength: maxLength(30)
+            },
+            password: {
+                required,
+                maxLength: maxLength(30)
+            }
+        },
+
         methods: {
             login : function (e) {
-                let okay = true;
-                if(!this.username || this.username.trim().length === 0){
-                    this.errors.username = 'Введите логин';
-                    okay = false;
-                }
-                if(!this.password || this.password.trim().length === 0){
-                    this.errors.password = 'Введите пароль';
-                    okay = false;
-                }
-
-                if(okay){
-                    let data = new FormData();
-                    data.append('username', this.username);
-                    data.append('password', this.password);
-                    data.append('rememberme', this.rememberMe);
-
-                    HTTP.post('/site/login', data)
+                this.$v.$touch();
+                if(!this.$v.$invalid) {
+                    HTTP.post('/site/login', {
+                        username: this.username,
+                        password: this.password,
+                        rememberMe: this.rememberMe
+                    })
                         .then(response => {
                             if(response.data.status === 'success'){
                                 localStorage.token = response.data.token;
@@ -81,7 +92,6 @@
                             }
                         }).catch(() => this.errors.method = 'Нет отклика от сервера');
                 }
-
                 e.preventDefault();
             },
 
