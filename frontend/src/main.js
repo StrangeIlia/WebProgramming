@@ -13,7 +13,6 @@ export let MainVue = new Vue({
   router,
   data: {
     username : '',
-   // successAuth: false
   },
 
   render: h => h(App),

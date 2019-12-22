@@ -6,7 +6,7 @@
           <div v-for="video in videos" :key="video.id" class="col-md-3">
               <router-link :to="{name:'video', params:{id:video.id}}">
                 <div class="card mb-4 shadow-sm">
-                  <img :src="video.preview" alt = "Невозможно">
+                  <img :src="video.preview" alt = "Невозможно" width="100%" height="100%">
                   <div class = "card-body">
                     <div class="card-text">
                       {{video.name}}

@@ -2,9 +2,7 @@
 
 namespace app\models;
 
-use app\components\ImageHelper;
-use LocalFileHelper;
-use phpDocumentor\Reflection\Types\Boolean;
+use app\components\LocalFileHelper;
 use Yii;
 use yii\base\Exception;
 use yii\base\InvalidConfigException;
@@ -131,6 +129,7 @@ class Video extends ActiveRecord
         return $this->hasMany(Video::className(), ['author' => 'id']);
     }
 
+
     /**
      * @param bool $insert
      * @return bool
@@ -138,41 +137,39 @@ class Video extends ActiveRecord
      */
     public function beforeSave($insert)
     {
-        if(parent::beforeSave($insert))
-        {
-            $this->loadVideo();
-            $this->loadPreview();
-            return true;
-        }
-        return false;
+        if(!parent::beforeSave($insert))
+            return false;
+
+        $this->uploadVideo();
+        $this->uploadPreview();
+        return true;
     }
 
     /**
      * @throws Exception
      */
-    public function loadVideo()
+    public function uploadVideo()
     {
-        $file = UploadedFile::getInstance($this, $this->path);
+        $file = UploadedFile::getInstancesByName($this['path'])[0];
         if($file===null) return;
-        $this->path = LocalFileHelper::createVideo($this->path);
+        $this->path = LocalFileHelper::createVideo($file);
         $file->saveAs($this->path);
     }
 
     /**
      * @throws Exception
      */
-    public function loadPreview()
+    public function uploadPreview()
     {
-        $file = UploadedFile::getInstance($this, $this->preview);
+        $file = UploadedFile::getInstancesByName($this['preview'])[0];
         if($file===null) return;
-        $this->preview = LocalFileHelper::createPreview($this->preview);
+        $this->preview = LocalFileHelper::createPreview($file);
         $file->saveAs($this->preview);
     }
 
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {
         $data = parent::toArray($fields, $expand, $recursive);
-
         $data['path'] = Yii::$app->urlManager->hostInfo . '/' . $data['path'];
         $data['preview'] = Yii::$app->urlManager->hostInfo . '/' . $data['preview'];
         return $data;

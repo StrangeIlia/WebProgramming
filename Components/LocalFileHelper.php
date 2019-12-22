@@ -1,6 +1,8 @@
 <?php
 
+namespace app\components;
 
+use yii\base\Exception;
 use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
 
@@ -9,7 +11,7 @@ class LocalFileHelper
     /***
      * @param $file
      * @return string
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     static public function createVideo($file)
     {
@@ -19,7 +21,7 @@ class LocalFileHelper
     /***
      * @param $file
      * @return string
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     static public function createPreview($file)
     {
@@ -30,13 +32,14 @@ class LocalFileHelper
      * @param UploadedFile $file
      * @param $basepath
      * @return string
-     * @throws \yii\base\Exception
+     * @throws Exception
      */
     static public function createFile($file, $basepath)
     {
         $date = date('Y/m/d');
-        FileHelper::createDirectory($basepath . $date );
-        return $basepath . $date . '/' . md5($file->name . time()) . '.' . $file->extension;
+        $dir = $basepath  . '/'  . $date;
+        FileHelper::createDirectory( $dir );
+        return $dir. '/' . md5($file->baseName . time()) . '.' . $file->extension;
     }
 }
 

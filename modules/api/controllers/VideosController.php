@@ -4,7 +4,11 @@
 namespace app\modules\api\controllers;
 
 
+use app\components\LocalFileHelper;
+use app\models\Video;
+use Yii;
 use yii\filters\AccessControl;
+use yii\web\UploadedFile;
 
 class VideosController extends BaseActiveController
 {
@@ -14,22 +18,71 @@ class VideosController extends BaseActiveController
     {
         $behaviors = parent::behaviors();
 
-        //$bearer = $behaviors['bearerAuth'];
-        //unset($behaviors['bearerAuth']);
-        //$bearer['except'] = ['index', 'view'];
-        $behaviors['bearerAuth']['except'] = ['index', 'view'];
+        $bearer = $behaviors['bearerAuth'];
+        unset($behaviors['bearerAuth']);
+        $bearer['except'] = ['index', 'view'];
+
         $behaviors['access'] = [
             'class' => AccessControl::className(),
             'rules' => [
                 [
                     'actions' => ['index', 'view'],
                     'allow' => true,
-                    'roles' => ['@', '?'], //только авторизованные пользователи
+                    'roles' => ['@', '?'],
+                ],
+                [
+                    'actions' => ['create'],
+                    'allow' => true,
+                    //'roles' => ['@'],
+                ],
+                [
+                    'actions' => ['update', 'delete'],
+                    'allow' => true,
+                    'roles' => ['@'], //только авторизованные пользователи
+                    'matchCallback' => function($rule, $action){
+                        //Разрешить модификацию только авторам видео
+                        $selectedVideo = Video::findOne(Yii::$app->request->post()['id']);
+                        return $selectedVideo['author'] === Yii::$app->user->identity['id'];
+                    }
                 ]
             ],
         ];
-        //$behaviors['bearerAuth'] = $bearer;
+
+        $behaviors['bearerAuth'] = $bearer;
 
         return $behaviors;
+    }
+
+    public function actions()
+    {
+        $actions = parent::actions();
+        unset($actions['create']);
+        return $actions;
+    }
+
+    public function actionCreate()
+    {
+        if(!isset($_FILES['video']) || !isset($_FILES['preview']))
+            return [
+                'status' => 'reject',
+            ];
+
+        $video = new Video();
+        $request = Yii::$app->request->post();
+        $request['author'] = Yii::$app->user->identity->getId();
+        $request['numberOfViews'] = 0;
+
+        if($video->load($request, '')){
+            $video->path = 'video';
+            $video->preview = 'preview';
+            if($video->save()){
+                return [
+                    'status' => 'success',
+                ];
+            }
+        }
+        return [
+            'status' => 'reject',
+        ];
     }
 }

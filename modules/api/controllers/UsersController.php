@@ -16,7 +16,13 @@ class UsersController extends BaseActiveController
     {
         $behaviors = parent::behaviors();
 
-        $behaviors['bearerAuth']['except'] = ['create'];
+        // Вроде бы так правильней
+        // Сначала настраиваем права доступа
+        // Затем настраиваем права для аутнефикации ($behaviors['bearerAuth'] = $bearer)
+        $bearer = $behaviors['bearerAuth'];
+        unset($behaviors['bearerAuth']);
+        $bearer['except'] = ['create'];
+
         $behaviors['access'] = [
             'class' => AccessControl::className(),
             'rules' => [
@@ -29,17 +35,23 @@ class UsersController extends BaseActiveController
                     'actions' => ['update', 'delete'],
                     'allow' => true,
                     'roles' => ['@'], //только авторизованные пользователи
-                    'matchCallBack' => function($rule, $action){
+                    'matchCallback' => function($rule, $action){
                         // Разрешаем обновление/удаление только если id совпадает с id пользователя
                         return Yii::$app->user->identity['id'] === Yii::$app->request->post()['id'];
                     }
                 ],
                 [
-                    'action' => ['index', 'view'], //Доступ к методам index и view запрещен для всех
-                    'allow' => false
+                    'allow' => true,
+                    'actions' => ['index', 'view'],
+                    'matchCallback' => function($rule, $action){
+                        //Доступ к методам index и view запрещен для всех
+                        return false;
+                    }
                 ]
             ],
         ];
+
+        $behaviors['bearerAuth'] = $bearer;
 
         return $behaviors;
     }

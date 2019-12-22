@@ -1,8 +1,8 @@
 <template>
     <div class="my-container">
         <div class="col-md-4">
-            <form @submit="reg">
-                <div>{{errors.method}}</div>
+            <form @submit="registration">
+                <div>{{error}}</div>
                 <div class="form-group">
                     <label for="username">Логин</label>
                     <input id="username" type="text" class="form-control" placeholder="Введите ваш логин" v-model="username">
@@ -49,11 +49,7 @@
                 email: "",
                 password: "",
                 repeatPassword: "",
-                errors: {
-                    username: "",
-                    password: "",
-                    method: ""
-                }
+                error: ""
             }
         },
 
@@ -94,7 +90,7 @@
         },
 
         methods: {
-            reg : function (e) {
+            registration : function (e) {
                 this.$v.$touch();
                 if(!this.$v.$invalid) {
                       HTTP.post('/users/create', {
@@ -109,10 +105,9 @@
                                 HTTP.defaults.headers['Authorization'] = 'Bearer ' + localStorage.token;
                                 this.$router.push('/');
                             } else {
-
-                                this.errors.method = response.data.error;
+                                this.error = response.data.error;
                             }
-                        }).catch(() => this.errors.method = 'Нет отклика от сервера');
+                        }).catch(() => this.error = 'Нет отклика от сервера');
                 }
                  e.preventDefault();
             }
