@@ -15,10 +15,7 @@ class SiteController extends BaseController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-
-        $bearer = $behaviors['bearerAuth'];
-        unset($behaviors['bearerAuth']);
-        $bearer['except'] = ['login'];
+        $behaviors['bearerAuth']['except'] = ['login'];
 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
@@ -35,9 +32,16 @@ class SiteController extends BaseController
                 ]
             ],
         ];
-        $behaviors['bearerAuth'] = $bearer;
-
         return $behaviors;
+    }
+
+    public function verbs()
+    {
+        $verbs = parent::verbs();
+        $verbs['login'] = ['POST', 'OPTIONS'];
+        $verbs['get_username'] = ['GET', 'OPTIONS'];
+        $verbs['logout'] = ['POST', 'OPTIONS'];
+        return $verbs;
     }
 
     /**
@@ -47,8 +51,7 @@ class SiteController extends BaseController
     public function actionLogin()
     {
         $model = new LoginForm();
-        $request = Yii::$app->request->post();
-        if ($model->load($request, '') && $model->login()) {
+        if ($model->load(Yii::$app->request->post(), '') && $model->login()) {
             return [
                 'status' => 'success',
                 'token' => $model->getUser()['accessToken'],

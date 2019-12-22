@@ -1,10 +1,11 @@
 <template>
     <div class="my-container">
         <div class="col-md-4">
-            <div>
+            <form @submit="reg">
+                <div>{{errors.method}}</div>
                 <div class="form-group">
-                    <label for="login">Логин</label>
-                    <input id="login" type="text" class="form-control" placeholder="Введите ваш логин" v-model="username">
+                    <label for="username">Логин</label>
+                    <input id="username" type="text" class="form-control" placeholder="Введите ваш логин" v-model="username">
                     <div class="error" v-if="invalidUserName">Логин не может быть пустым!!!</div>
                 </div>
                 <div class="form-group">
@@ -20,28 +21,27 @@
                 <div class="form-group">
                     <label for="check_password">Подтвердите пароль</label>
                     <input id="check_password" type="password" class="form-control w-100" placeholder="Подтвердите пароль" v-model="repeatPassword">
-                    <div class="error" v-if="invalidRepeatPassword">Пароль не может быть пустым!!!</div>
+                    <div class="error" v-if="invalidRepeatPassword">Пароли должны совпадать</div>
                 </div>
                 <div class="form-group">
-                    <button class="btn btn-success w-100">Зарегистрироваться</button>
+                    <button type="submit" class="btn btn-success w-100">Зарегистрироваться</button>
                 </div>
                 <div class="form-group">
                     <router-link :to="{name:'home', params:{}}">
-                        <button type="submit" class="btn btn-primary w-100">Вернуться на главную страницу</button>
+                        <button class="btn btn-primary w-100">Вернуться на главную страницу</button>
                     </router-link>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </template>
 
 <script>
     import { HTTP } from "../components/http";
-    import { MainVue } from "../main";
     const { required, maxLength, sameAs } = require('vuelidate/lib/validators');
 
     export default {
-        name: 'Authorization',
+        name: 'Registration',
 
         data(){
             return {
@@ -54,24 +54,6 @@
                     password: "",
                     method: ""
                 }
-            }
-        },
-
-        validations: {
-            username: {
-                required,
-                maxLength: maxLength(30)
-            },
-            email: {
-                required,
-                maxLength: maxLength(30)
-            },
-            password: {
-                required,
-                maxLength: maxLength(30),
-            },
-            repeatPassword: {
-                sameAsPassword: sameAs('password')
             }
         },
 
@@ -93,11 +75,29 @@
             }
         },
 
+        validations: {
+            username: {
+                required,
+                maxLength: maxLength(30)
+            },
+            email: {
+                required,
+                maxLength: maxLength(30)
+            },
+            password: {
+                required,
+                maxLength: maxLength(30),
+            },
+            repeatPassword: {
+                sameAsPassword: sameAs('password')
+            }
+        },
+
         methods: {
-            login : function (e) {
+            reg : function (e) {
                 this.$v.$touch();
-                if(this.$v.$invalid()) {
-                      HTTP.post('/site/create', {
+                if(!this.$v.$invalid) {
+                      HTTP.post('/users/create', {
                           username: this.username,
                           password: this.password,
                           email: this.email
@@ -105,24 +105,16 @@
                         .then(response => {
                             if(response.data.status === 'success'){
                                 localStorage.token = response.data.token;
-                                MainVue.username = this.username;
+                                this.$root.username = this.username;
                                 HTTP.defaults.headers['Authorization'] = 'Bearer ' + localStorage.token;
                                 this.$router.push('/');
                             } else {
-                                MainVue.username = '';
-                                delete localStorage.token;
-                                this.errors.method = response.data;
+
+                                this.errors.method = response.data.error;
                             }
                         }).catch(() => this.errors.method = 'Нет отклика от сервера');
                 }
                  e.preventDefault();
-            },
-
-            clearError : function (e) {
-                this.errors.username = '';
-                this.errors.method = '';
-                this.errors.password = '';
-                e.preventDefault();
             }
         }
     }

@@ -4,8 +4,10 @@ namespace app\models;
 
 use Yii;
 use yii\base\Exception;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\Expression;
 use yii\web\IdentityInterface;
 use yii\base\InvalidConfigException;
 
@@ -34,6 +36,21 @@ class User extends ActiveRecord implements IdentityInterface
     public static function tableName()
     {
         return 'Users';
+    }
+
+    /**
+     * Добавляем инициализацию времени
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => 'createdAt',
+                'updatedAtAttribute' => 'updatedAt',
+                'value' => new Expression('now()')
+            ]
+        ];
     }
 
     /**

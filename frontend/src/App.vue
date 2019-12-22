@@ -16,10 +16,10 @@
                 </router-link>
               </div>
             </div>
-            <div v-if="this.successAuth">
+            <div v-if="this.$root.successAuth">
               <div class="dropdown">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  {{this.username}}
+                  {{$root.username}}
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                   <router-link :to="{name: 'add_video', params:{}}">
@@ -47,7 +47,6 @@
 
 <script>
   import {HTTP} from "./components/http";
-  import {MainVue} from "./main";
 
   export default {
     name: 'App',
@@ -56,13 +55,10 @@
       isRegOrAuth : function () {
         let isReg = this.$route.name === 'reg';
         let isAuth = this.$route.name === 'auth';
-        return isReg || isAuth || this.successAuth;
+        return isReg || isAuth || this.$root.successAuth;
       },
-      username : function(){
-        return MainVue.username;
-      },
-      successAuth : function () {
-        return MainVue.successAuth();
+      token: function ()  {
+        return localStorage.token;
       }
     },
 
@@ -70,7 +66,7 @@
       logout : function () {
         HTTP.post('/site/logout').then(response => {
           if(response.data.status === 'success'){
-            MainVue.username = '';
+            this.$root.username = '';
             delete localStorage.token;
             delete HTTP.defaults.headers['Authorization'];
           }

@@ -14,9 +14,10 @@ class VideosController extends BaseActiveController
     {
         $behaviors = parent::behaviors();
 
-        $bearer = $behaviors['bearerAuth'];
-        unset($behaviors['bearerAuth']);
-        $bearer['except'] = ['index', 'view'];
+        //$bearer = $behaviors['bearerAuth'];
+        //unset($behaviors['bearerAuth']);
+        //$bearer['except'] = ['index', 'view'];
+        $behaviors['bearerAuth']['except'] = ['index', 'view'];
         $behaviors['access'] = [
             'class' => AccessControl::className(),
             'rules' => [
@@ -27,7 +28,7 @@ class VideosController extends BaseActiveController
                 ]
             ],
         ];
-        $behaviors['bearerAuth'] = $bearer;
+        //$behaviors['bearerAuth'] = $bearer;
 
         return $behaviors;
     }

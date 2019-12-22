@@ -20,7 +20,7 @@
                 </div>
                 <div class="form-group">
                     <router-link :to="{name:'home', params:{}}">
-                        <button type="submit" class="btn btn-primary w-100">Вернуться на главную страницу</button>
+                        <button class="btn btn-primary w-100">Вернуться на главную страницу</button>
                     </router-link>
                 </div>
             </form>
@@ -30,7 +30,6 @@
 
 <script>
     import { HTTP } from "../components/http";
-    import {MainVue} from "../main";
     const { required, maxLength } = require('vuelidate/lib/validators');
 
     export default {
@@ -80,23 +79,16 @@
                         .then(response => {
                             if(response.data.status === 'success'){
                                 localStorage.token = response.data.token;
-                                MainVue.username = this.username;
+                                this.$root.username = this.username;
                                 HTTP.defaults.headers['Authorization'] = 'Bearer ' + localStorage.token;
                                 this.$router.push('/');
                             } else {
-                                MainVue.username = '';
+                                this.$root.username = '';
                                 delete localStorage.token;
                                 this.errors.method = response.data;
                             }
                         }).catch(() => this.errors.method = 'Нет отклика от сервера');
                 }
-                e.preventDefault();
-            },
-
-            clearError : function (e) {
-                this.errors.username = '';
-                this.errors.method = '';
-                this.errors.password = '';
                 e.preventDefault();
             }
         }

@@ -12,21 +12,22 @@ export let MainVue = new Vue({
   name: 'Main',
   router,
   data: {
-    username : ''
+    username : '',
+   // successAuth: false
   },
 
   render: h => h(App),
 
   created() {
-    HTTP.get('/site/get_username').then(response => {
-      if(response.data.username !== null)
+    if(localStorage.token !== undefined){
+      HTTP.get('/site/get_username').then(response => {
+        if(response.data.username !== null)
           this.username = response.data.username;
-    }).catch(() => delete localStorage.token);
-
-
+      }).catch(() => delete localStorage.token);
+    }
   },
 
-  methods: {
+  computed: {
     successAuth : function () {
       return this.username !== '';
     }
