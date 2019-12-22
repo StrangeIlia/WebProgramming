@@ -9,11 +9,11 @@ use yii\db\ActiveRecord;
 use yii\db\Expression;
 
 /**
- * This is the model class for table "VideoPlaylist".
+ * This is the model class for table "VideoPlaylists".
  *
  * @property int $playlistId id плейлиста
  * @property int $videoId id видео
- * @property string $createdAt когда создана
+ * @property string|null $createdAt когда создана
  *
  * @property Video $playlist
  * @property Playlist $playlist0
@@ -25,7 +25,7 @@ class VideoPlaylist extends ActiveRecord
      */
     public static function tableName()
     {
-        return 'VideoPlaylist';
+        return 'VideoPlaylists';
     }
 
     /**
@@ -48,7 +48,7 @@ class VideoPlaylist extends ActiveRecord
     public function rules()
     {
         return [
-            [['playlistId', 'videoId', 'createdAt'], 'required'],
+            [['playlistId', 'videoId'], 'required'],
             [['playlistId', 'videoId'], 'integer'],
             [['createdAt'], 'safe'],
             [['playlistId', 'videoId'], 'unique', 'targetAttribute' => ['playlistId', 'videoId']],

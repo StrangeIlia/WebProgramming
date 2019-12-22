@@ -24,8 +24,8 @@ use yii\web\UploadedFile;
  * @property string|null $description Описание видео
  * @property string $preview Путь к изображению превью
  * @property int $numberOfViews Количество просмотров
- * @property string $createdAt Когда видео создано
- * @property string $updatedAt Когда обновлена информация
+ * @property string|null $createdAt Когда видео создано
+ * @property string|null $updatedAt Когда обновлена информация
  *
  * @property Rating[] $ratings
  * @property User[] $users
@@ -64,7 +64,7 @@ class Video extends ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'path', 'author', 'preview', 'numberOfViews', 'createdAt', 'updatedAt'], 'required'],
+            [['name', 'path', 'author', 'preview', 'numberOfViews'], 'required'],
             [['author', 'numberOfViews'], 'integer'],
             [['createdAt', 'updatedAt'], 'safe'],
             [['name', 'path', 'description', 'preview'], 'string', 'max' => 50],

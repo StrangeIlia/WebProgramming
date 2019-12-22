@@ -5,6 +5,7 @@ namespace app\models;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 use yii\db\Expression;
 
 /**
@@ -13,13 +14,14 @@ use yii\db\Expression;
  * @property int $id Id
  * @property string $name название плейлиста
  * @property int $author автор плейлиста
- * @property string $createdAt Когда создан
- * @property string $updatedAt Когда обновлен
+ * @property string|null $createdAt Когда создан
+ * @property string|null $updatedAt Когда обновлен
  *
  * @property User $author0
  * @property VideoPlaylist[] $videoPlaylists
  */
-class Playlist extends \yii\db\ActiveRecord
+
+class Playlist extends ActiveRecord
 {
     /**
      * {@inheritdoc}
@@ -50,7 +52,7 @@ class Playlist extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'author', 'createdAt', 'updatedAt'], 'required'],
+            [['name', 'author'], 'required'],
             [['author'], 'integer'],
             [['createdAt', 'updatedAt'], 'safe'],
             [['name'], 'string', 'max' => 30],

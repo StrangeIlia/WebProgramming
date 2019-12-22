@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use Yii;
 use yii\base\Exception;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -16,10 +17,10 @@ use yii\base\InvalidConfigException;
  * @property string $email email
  * @property string $username логин
  * @property string $password пароль
- * @property string $createdAt когда создан
- * @property string $updatedAt когда обновлен
- * @property string $authKey ключ авторизации
- * @property string $accessToken токен
+ * @property string|null $createdAt когда создан
+ * @property string|null $updatedAt когда обновлен
+ * @property string|null $authKey ключ авторизации
+ * @property string|null $accessToken токен
  *
  * @property Playlist[] $playlists
  * @property Rating[] $ratings
@@ -41,12 +42,12 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['email', 'username', 'password', 'createdAt', 'updatedAt', 'authKey', 'accessToken'], 'required'],
+            [['email', 'username', 'password'], 'required'],
             [['createdAt', 'updatedAt'], 'safe'],
             [['email', 'username', 'password'], 'string', 'max' => 30],
             [['authKey', 'accessToken'], 'string', 'max' => 32],
             [['email'], 'unique'],
-            [['username'], 'unique']
+            [['username'], 'unique'],
         ];
     }
 
@@ -208,8 +209,8 @@ class User extends ActiveRecord implements IdentityInterface
             return false;
         }
         if($insert){
-            $this->authKey = \Yii::$app->security->generateRandomString();
-            $this->accessToken = \Yii::$app->security->generateRandomString();
+            $this->authKey = Yii::$app->security->generateRandomString();
+            $this->accessToken = Yii::$app->security->generateRandomString();
         }
         return true;
     }

@@ -2,7 +2,6 @@
     <div class="my-container">
         <div class="col-md-4">
             <form @submit="login">
-                <div>{{errors.method}}</div>
                 <div class="form-group">
                     <label for="username">Логин</label>
                     <input id="username" type="text" class="form-control" placeholder="Введите ваш логин" v-model="username">
@@ -32,8 +31,7 @@
 <script>
     import { HTTP } from "../components/http";
     import {MainVue} from "../main";
-    import required from "vuelidate/src/validators/required";
-    import maxLength from "vuelidate/src/validators/maxLength";
+    const { required, maxLength } = require('vuelidate/lib/validators');
 
     export default {
         name: 'Authorization',

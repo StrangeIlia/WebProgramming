@@ -6,8 +6,6 @@ namespace app\modules\api\controllers;
 use Yii;
 use app\models\LoginForm;
 use yii\filters\AccessControl;
-use yii\filters\auth\HttpBearerAuth;
-use yii\filters\VerbFilter;
 
 class SiteController extends BaseController
 {
@@ -17,7 +15,11 @@ class SiteController extends BaseController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-        $behaviors['bearerAuth']['except'] = ['login'];
+
+        $bearer = $behaviors['bearerAuth'];
+        unset($behaviors['bearerAuth']);
+        $bearer['except'] = ['login'];
+
         $behaviors['access'] = [
             'class' => AccessControl::className(),
             'rules' => [
@@ -33,6 +35,8 @@ class SiteController extends BaseController
                 ]
             ],
         ];
+        $behaviors['bearerAuth'] = $bearer;
+
         return $behaviors;
     }
 
