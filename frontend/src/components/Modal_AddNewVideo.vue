@@ -14,14 +14,14 @@
                                     </div>
                                     <div class="form-group">
                                         <div>
-                                            <label>Выберите загружаемый файл:</label>
-                                            <input  type="file" ref="video" @change="loadVideo">
+                                            <label >Выберите загружаемый файл:</label>
+                                            <input type="file" ref="video" @change="loadVideo">
                                             <div class="error"></div>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div>
-                                            <lable>Выберите превью</lable>
+                                            <label>Выберите превью</label>
                                             <input type="file" ref="preview" @change="loadPreview">
                                             <div class="error"></div>
                                         </div>
@@ -31,7 +31,7 @@
 
                         <div class="modal-footer">
                             <slot name="footer">
-                                <button type="submit" class="modal-default-button">
+                                <button type="submit" class="modal-default-button" :disabled="sendData">
                                     Добавление видео
                                 </button>
                                 <button class="modal-default-button" @click="close">
@@ -74,7 +74,8 @@
                 name: "",
                 video: null,
                 preview: null,
-                result: ""
+                result: "",
+                sendData: false
             }
         },
 
@@ -96,6 +97,7 @@
             close : function() {
                 this.result = this.name = "";
                 this.preview = this.video = null;
+                this.sendData = false;
                 this.$emit('close');
             },
 
@@ -113,6 +115,8 @@
                 }
 
                 if(okey){
+                    this.sendData = true;
+
                     let data = new FormData();
                     data.append('name', this.name);
                     data.append('video', this.video);
@@ -125,10 +129,14 @@
                             if(response.data.status === 'success')
                                 this.result = 'Видео успешно добавлено!!!';
                             else
-                                this.result = 'Не удалось добавить видео!!!'
+                                this.result = 'Не удалось добавить видео!!!';
+                            this.sendData = false;
                         })
 
-                        .catch(()=> this.result = 'Нет отклика от сервера');
+                        .catch(() =>{
+                            this.result = 'Нет отклика от сервера';
+                            this.sendData = false;
+                        });
                 }
 
                 e.preventDefault();
