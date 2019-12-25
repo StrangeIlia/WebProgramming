@@ -92,7 +92,7 @@
                                 localStorage.token = response.data.token;
                                 this.$root.username = this.username;
                                 HTTP.defaults.headers['Authorization'] = 'Bearer ' + localStorage.token;
-                                this.$router.push('/');
+                                this.close();
                             } else {
                                 this.$root.username = '';
                                 delete localStorage.token;

@@ -51,7 +51,7 @@
                         <div class="modal-footer">
                             <slot name="footer">
                                 <button class="modal-default-button" @click="close">
-                                    Отмена
+                                    Выход
                                 </button>
                             </slot>
                         </div>
