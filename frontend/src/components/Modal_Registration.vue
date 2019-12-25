@@ -8,23 +8,23 @@
                             <slot name="body">
                                 <div>{{error}}</div>
                                 <div class="form-group">
-                                    <label for="username">Логин</label>
-                                    <input id="username" type="text" class="form-control" placeholder="Введите ваш логин" v-model="username">
+                                    <label for="reg_username">Логин</label>
+                                    <input id="reg_username" type="text" class="form-control" placeholder="Введите ваш логин" v-model="username">
                                     <div class="error" v-if="invalidUserName">Логин не может быть пустым!!!</div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="email">Адрес электронной почты</label>
-                                    <input id="email" type="email" class="form-control" placeholder="Введите ваш адрес электронной почты" v-model="email">
+                                    <label for="reg_email">Адрес электронной почты</label>
+                                    <input id="reg_email" type="email" class="form-control" placeholder="Введите ваш адрес электронной почты" v-model="email">
                                     <div class="error" v-if="invalidEmail">Email не может быть пустым!!!</div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="password">Пароль</label>
-                                    <input id="password" type="password" class="form-control" placeholder="Введите пароль" v-model="password">
+                                    <label for="reg_password">Пароль</label>
+                                    <input id="reg_password" type="password" class="form-control" placeholder="Введите пароль" v-model="password">
                                     <div class="error" v-if="invalidPassword">Пароль не может быть пустым!!!</div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="check_password">Подтвердите пароль</label>
-                                    <input id="check_password" type="password" class="form-control w-100" placeholder="Подтвердите пароль" v-model="repeatPassword">
+                                    <label for="reg_check_password">Подтвердите пароль</label>
+                                    <input id="reg_check_password" type="password" class="form-control w-100" placeholder="Подтвердите пароль" v-model="repeatPassword">
                                     <div class="error" v-if="invalidRepeatPassword">Пароли должны совпадать</div>
                                 </div>
                                 <div class="form-group">

@@ -8,13 +8,13 @@
                             <slot name="body">
                                 <div>{{errors.method}}</div>
                                 <div class="form-group">
-                                    <label for="username">Логин</label>
-                                    <input id="username" type="text" class="form-control" placeholder="Введите ваш логин" v-model="username">
+                                    <label for="auth_username">Логин</label>
+                                    <input id="auth_username" type="text" class="form-control" placeholder="Введите ваш логин" v-model="username">
                                     <div class="error" v-if="invalidUserName">Логин не может быть пустым!!!</div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="password">Пароль</label>
-                                    <input id="password" type="password" class="form-control" placeholder="Введите пароль" v-model="password">
+                                    <label for="auth_password">Пароль</label>
+                                    <input id="auth_password" type="password" class="form-control" placeholder="Введите пароль" v-model="password">
                                     <div class="error" v-if="invalidPassword">Пароль не может быть пустым!!!</div>
                                 </div>
                                 <div class="form-group">
