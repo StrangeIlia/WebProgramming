@@ -170,6 +170,7 @@ class Video extends ActiveRecord
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {
         $data = parent::toArray($fields, $expand, $recursive);
+        $data['author'] = User::findIdentity($data['author'])['username'];
         $data['path'] = Yii::$app->urlManager->hostInfo . '/' . $data['path'];
         $data['preview'] = Yii::$app->urlManager->hostInfo . '/' . $data['preview'];
         return $data;

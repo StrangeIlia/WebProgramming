@@ -16,12 +16,7 @@ class UsersController extends BaseActiveController
     {
         $behaviors = parent::behaviors();
 
-        // Вроде бы так правильней
-        // Сначала настраиваем права доступа
-        // Затем настраиваем права для аутнефикации ($behaviors['bearerAuth'] = $bearer)
-        $bearer = $behaviors['bearerAuth'];
-        unset($behaviors['bearerAuth']);
-        $bearer['except'] = ['create'];
+        $behaviors['bearerAuth']['except'] = ['create'];
 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
@@ -50,8 +45,6 @@ class UsersController extends BaseActiveController
                 ]
             ],
         ];
-
-        $behaviors['bearerAuth'] = $bearer;
 
         return $behaviors;
     }

@@ -19,9 +19,10 @@ const routes = [
     component: Home
   },
   {
-    path: '/video',
+    path: '/video/:id',
     name: 'video',
-    component: ContextPage
+    props: true,
+    component: ContextPage,
   },
   {
     path: '/auth',

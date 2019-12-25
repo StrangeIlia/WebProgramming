@@ -1,5 +1,8 @@
 <template>
     <div class="ml-auto mr-auto justify-content-center" style="max-width: 80%;">
+        <video controls>
+            <source :src="video.path" type="video/mp4">
+        </video>
         <div class="mt-3" style="border: solid #FF0000 3px; min-height: 300px;">
             <p class="text-center" style="font-size: 60px;">{{video.path}}</p>
         </div>
@@ -21,6 +24,7 @@
     import { HTTP } from "../components/http";
     export default {
         name: 'Video',
+        props: ['id'],
         data () {
             return{
                 video: {
@@ -31,15 +35,12 @@
                     description: "",
                     preview: "",
                     numberOfViews: 0,
-                    message: ""
                 }
             }
         },
 
         created() {
-            var id = this.$route.params.id;
-            this.video.message = id;
-            HTTP.get('/videos/view?id=' + id).then(response => (this.video = response.data))
+            HTTP.get('/videos/view?id=' + this.$props.id).then(response => (this.video = response.data))
         }
     }
 

@@ -18,9 +18,7 @@ class VideosController extends BaseActiveController
     {
         $behaviors = parent::behaviors();
 
-        $bearer = $behaviors['bearerAuth'];
-        unset($behaviors['bearerAuth']);
-        $bearer['except'] = ['index', 'view'];
+        $behaviors['bearerAuth']['except'] = ['index', 'view'];
 
         $behaviors['access'] = [
             'class' => AccessControl::className(),
@@ -33,7 +31,7 @@ class VideosController extends BaseActiveController
                 [
                     'actions' => ['create'],
                     'allow' => true,
-                    //'roles' => ['@'],
+                    'roles' => ['@'],
                 ],
                 [
                     'actions' => ['update', 'delete'],
@@ -48,8 +46,6 @@ class VideosController extends BaseActiveController
             ],
         ];
 
-        $behaviors['bearerAuth'] = $bearer;
-
         return $behaviors;
     }
 
@@ -63,9 +59,7 @@ class VideosController extends BaseActiveController
     public function actionCreate()
     {
         if(!isset($_FILES['video']) || !isset($_FILES['preview']))
-            return [
-                'status' => 'reject',
-            ];
+            return [ 'status' => 'reject'];
 
         $video = new Video();
         $request = Yii::$app->request->post();

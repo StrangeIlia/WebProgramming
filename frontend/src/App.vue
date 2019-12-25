@@ -22,6 +22,8 @@
                   {{$root.username}}
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                  <button @click="show_AddNewVideo" class="dropdown-item">Добавить видео (м)</button>
+
                   <router-link :to="{name: 'add_video', params:{}}">
                     <a class="dropdown-item">Добавить видео</a>
                   </router-link>
@@ -42,27 +44,48 @@
       </div>
     </footer>
 
+    <modal_addNewVideo v-show="modal.addNew_Video" @close="close_AddNewVideo"/>
+
   </div>
 </template>
 
 <script>
   import {HTTP} from "./components/http";
+  import modal_addNewVideo from './components/Modal_AddNewVideo.vue';
 
   export default {
     name: 'App',
+
+    components: {
+      modal_addNewVideo,
+    },
+
+    data() {
+      return {
+        modal: {
+          addNew_Video: false
+        },
+      }
+    },
 
     computed:{
       isRegOrAuth : function () {
         let isReg = this.$route.name === 'reg';
         let isAuth = this.$route.name === 'auth';
         return isReg || isAuth || this.$root.successAuth;
-      },
-      token: function ()  {
-        return localStorage.token;
       }
     },
 
     methods: {
+      show_AddNewVideo : function() {
+
+        this.modal.addNew_Video = true;
+      },
+
+      close_AddNewVideo : function() {
+        this.modal.addNew_Video = false;
+      },
+
       logout : function () {
         HTTP.post('/site/logout').then(response => {
           if(response.data.status === 'success'){

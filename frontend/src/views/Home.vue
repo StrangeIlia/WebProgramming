@@ -4,7 +4,7 @@
       <div class="container">
         <div class="row">
           <div v-for="video in videos" :key="video.id" class="col-md-3">
-              <router-link :to="{name:'video', params:{id:video.id}}">
+              <router-link :to="{name:'video', params:{id:video.id} }">
                 <div class="card mb-4 shadow-sm">
                   <img :src="video.preview" alt = "Невозможно" width="100%" height="100%">
                   <div class = "card-body">
@@ -32,8 +32,6 @@
     },
 
     created() {
-
-
       HTTP.get('/videos')
               .then(response => {this.videos = response.data;});
     }
