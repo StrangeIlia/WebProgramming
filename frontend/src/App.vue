@@ -8,13 +8,12 @@
           <div class="navbar-nav ml-auto">
             <div v-if="!this.isRegOrAuth">
               <div class="content">
-                <router-link :to="{name:'auth', params:{}}">
-                  <button type="submit" class="btn btn-primary m-auto">Вход</button>
-                </router-link>
+                <button @click="show_Authoriztion" class="btn btn-primary m-auto">Вход</button>
                 <router-link :to="{name:'reg', params:{}}">
                   <button type="submit" class="btn btn-primary m-auto">Регистрация</button>
                 </router-link>
               </div>
+              <modal_authoriztion v-show="modal.authorization" @close="close_Authoriztion"/>
             </div>
             <div v-if="this.$root.successAuth">
               <div class="dropdown">
@@ -22,15 +21,12 @@
                   {{$root.username}}
                 </button>
                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                  <button @click="show_AddNewVideo" class="dropdown-item">Добавить видео (м)</button>
-
-                  <router-link :to="{name: 'add_video', params:{}}">
-                    <a class="dropdown-item">Добавить видео</a>
-                  </router-link>
+                  <button @click="show_AddNewVideo" class="dropdown-item">Добавить видео</button>
                   <a class="dropdown-item">Добавить плейлист</a>
                   <a @click="logout" class="dropdown-item" href="#">Выход</a>
                 </div>
               </div>
+              <modal_addNewVideo v-show="modal.addNewVideo" @close="close_AddNewVideo"/>
             </div>
           </div>
         </div>
@@ -44,7 +40,9 @@
       </div>
     </footer>
 
-    <modal_addNewVideo v-show="modal.addNew_Video" @close="close_AddNewVideo"/>
+
+
+
 
   </div>
 </template>
@@ -52,18 +50,21 @@
 <script>
   import {HTTP} from "./components/http";
   import modal_addNewVideo from './components/Modal_AddNewVideo.vue';
+  import modal_authoriztion from './components/Modal_Authorization.vue';
 
   export default {
     name: 'App',
 
     components: {
       modal_addNewVideo,
+      modal_authoriztion
     },
 
     data() {
       return {
         modal: {
-          addNew_Video: false
+          addNewVideo: false,
+          authorization: false
         },
       }
     },
@@ -78,12 +79,19 @@
 
     methods: {
       show_AddNewVideo : function() {
-
-        this.modal.addNew_Video = true;
+        this.modal.addNewVideo = true;
       },
 
       close_AddNewVideo : function() {
-        this.modal.addNew_Video = false;
+        this.modal.addNewVideo = false;
+      },
+
+      show_Authoriztion : function() {
+        this.modal.authorization = true;
+      },
+
+      close_Authoriztion : function() {
+        this.modal.authorization = false;
       },
 
       logout : function () {

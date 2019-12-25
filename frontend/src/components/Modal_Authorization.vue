@@ -1,0 +1,172 @@
+<template>
+    <transition name="modal_authorization">
+        <form @submit="login">
+            <div class="modal-mask">
+                <div class="modal-wrapper">
+                    <div class="modal-container">
+                        <div class="modal-body">
+                            <slot name="body">
+                                <div>{{errors.method}}</div>
+                                <div class="form-group">
+                                    <label for="username">Логин</label>
+                                    <input id="username" type="text" class="form-control" placeholder="Введите ваш логин" v-model="username">
+                                    <div class="error" v-if="invalidUserName">Логин не может быть пустым!!!</div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Пароль</label>
+                                    <input id="password" type="password" class="form-control" placeholder="Введите пароль" v-model="password">
+                                    <div class="error" v-if="invalidPassword">Пароль не может быть пустым!!!</div>
+                                </div>
+                                <div class="form-group">
+                                    <label><input type="checkbox" name="checkbox" v-model="rememberMe">Запомнить меня</label>
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-success w-100">Войти</button>
+                                </div>
+                                <div class="form-group">
+                                    <button class="btn btn-primary w-100" @click="close">Вернуться на главную страницу</button>
+                                </div>
+                            </slot>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </transition>
+</template>
+
+<script>
+    import {HTTP} from "./http";
+    const { required, maxLength } = require('vuelidate/lib/validators');
+
+    export default {
+        name: 'modal_authorization',
+
+        data(){
+            return {
+                username: "",
+                password: "",
+                rememberMe: false,
+                errors: {
+                    method: ""
+                }
+            }
+        },
+
+        computed: {
+            invalidUserName : function(){
+                return this.$v.username.$anyError && !this.$v.username.required;
+            },
+
+            invalidPassword : function(){
+                return this.$v.password.$anyError && !this.$v.password.required;
+            },
+        },
+
+        validations: {
+            username: {
+                required,
+                maxLength: maxLength(30)
+            },
+            password: {
+                required,
+                maxLength: maxLength(30)
+            }
+        },
+
+        methods: {
+            close : function() {
+                this.$emit('close');
+            },
+
+            login : function (e) {
+                this.$v.$touch();
+                if(!this.$v.$invalid) {
+                    HTTP.post('/site/login', {
+                        username: this.username,
+                        password: this.password,
+                        rememberMe: this.rememberMe
+                    })
+                        .then(response => {
+                            if(response.data.status === 'success'){
+                                localStorage.token = response.data.token;
+                                this.$root.username = this.username;
+                                HTTP.defaults.headers['Authorization'] = 'Bearer ' + localStorage.token;
+                                this.$router.push('/');
+                            } else {
+                                this.$root.username = '';
+                                delete localStorage.token;
+                                this.errors.method = response.data;
+                            }
+                        }).catch(() => this.errors.method = 'Нет отклика от сервера');
+                }
+                e.preventDefault();
+            }
+        },
+    };
+</script>
+
+<style>
+    .modal-mask {
+        position: fixed;
+        z-index: 9998;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, .5);
+        display: table;
+        transition: opacity .3s ease;
+    }
+
+    .modal-wrapper {
+        display: table-cell;
+        vertical-align: middle;
+        horiz-align: center;
+    }
+
+    .modal-container {
+        width: 30%;
+        min-width: 500px;
+        margin: 0px auto;
+        padding: 20px 30px;
+        background-color: #fff;
+        border-radius: 2px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+        transition: all .3s ease;
+        font-family: Helvetica, Arial, sans-serif;
+    }
+
+    .modal-header h3 {
+        margin-top: 0;
+        color: #42b983;
+    }
+
+    .my-modal-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .modal-body {
+        margin: 20px 0;
+    }
+
+    .modal-default-button {
+        float: right;
+    }
+
+    .modal-enter {
+        opacity: 0;
+    }
+
+    .modal-leave-active {
+        opacity: 0;
+    }
+
+    .modal-enter .modal-container,
+    .modal-leave-active .modal-container {
+        -webkit-transform: scale(1.1);
+        transform: scale(1.1);
+    }
+</style>
