@@ -9,11 +9,10 @@
             <div v-if="!this.isRegOrAuth">
               <div class="content">
                 <button @click="show_Authoriztion" class="btn btn-primary m-auto">Вход</button>
-                <router-link :to="{name:'reg', params:{}}">
-                  <button type="submit" class="btn btn-primary m-auto">Регистрация</button>
-                </router-link>
+                <button @click="show_Registration" class="btn btn-primary m-auto">Регистрация</button>
               </div>
               <modal_authoriztion v-show="modal.authorization" @close="close_Authoriztion"/>
+              <modal_registration v-show="modal.registration" @close="close_Registration"/>
             </div>
             <div v-if="this.$root.successAuth">
               <div class="dropdown">
@@ -51,20 +50,23 @@
   import {HTTP} from "./components/http";
   import modal_addNewVideo from './components/Modal_AddNewVideo.vue';
   import modal_authoriztion from './components/Modal_Authorization.vue';
+  import modal_registration from  './components/Modal_Registration.vue';
 
   export default {
     name: 'App',
 
     components: {
       modal_addNewVideo,
-      modal_authoriztion
+      modal_authoriztion,
+      modal_registration
     },
 
     data() {
       return {
         modal: {
           addNewVideo: false,
-          authorization: false
+          authorization: false,
+          registration: false
         },
       }
     },
@@ -92,6 +94,14 @@
 
       close_Authoriztion : function() {
         this.modal.authorization = false;
+      },
+
+      show_Registration : function() {
+        this.modal.registration = true;
+      },
+
+      close_Registration : function() {
+        this.modal.registration = false;
       },
 
       logout : function () {

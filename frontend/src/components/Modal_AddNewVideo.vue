@@ -1,6 +1,6 @@
 <template>
     <transition name="modal_addNewVideo">
-        <form @submit="send" enctype="multipart/form-data" method="post">
+        <form @submit="addVideo" enctype="multipart/form-data" method="post">
             <div class="modal-mask" v-if="result === ''">
                 <div class="modal-wrapper">
                     <div class="modal-container">
@@ -67,7 +67,7 @@
     const { required, minLength, maxLength } = require('vuelidate/lib/validators');
 
     export default {
-        name: 'modal_addNewVideo',
+        name: 'Modal_AddNewVideo',
 
         data(){
             return{
@@ -97,7 +97,7 @@
                 this.$emit('close');
             },
 
-            send : function (e) {
+            addVideo : function (e) {
                 let okey = true;
 
                 if(!this.video){

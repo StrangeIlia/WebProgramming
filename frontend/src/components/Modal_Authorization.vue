@@ -40,7 +40,7 @@
     const { required, maxLength } = require('vuelidate/lib/validators');
 
     export default {
-        name: 'modal_authorization',
+        name: 'Modal_Authorization',
 
         data(){
             return {
