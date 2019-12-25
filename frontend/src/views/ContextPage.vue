@@ -1,12 +1,10 @@
 <template>
     <div class="ml-auto mr-auto justify-content-center" style="max-width: 80%;">
-        <video controls>
-            <source :src="video.path" type="video/mp4">
-        </video>
-        <div class="mt-3" style="border: solid #FF0000 3px; min-height: 300px;">
-            <p class="text-center" style="font-size: 60px;">{{video.path}}</p>
+        <div class="my-container">
+            <video controls>
+                <source :src="video.path" type="video/mp4">
+            </video>
         </div>
-
         <div style="border-bottom: solid 1px black;">
             <div class="font-weight-bold display-4">{{video.name}}</div>
         </div>
