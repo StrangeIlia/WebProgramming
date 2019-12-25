@@ -1,9 +1,11 @@
 <template>
     <div class="ml-auto mr-auto justify-content-center" style="max-width: 80%;">
         <div class="my-container">
-            <video controls>
-                <source :src="video.path" type="video/mp4">
-            </video>
+            <div class="container">
+                <div class="embed-responsive embed-responsive-16by9">
+                    <iframe class="embed-responsive-item" :src="video.path" allowfullscreen/>
+                </div>
+            </div>
         </div>
         <div style="border-bottom: solid 1px black;">
             <div class="font-weight-bold display-4">{{video.name}}</div>
@@ -43,3 +45,4 @@
     }
 
 </script>
+

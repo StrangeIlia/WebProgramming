@@ -7,6 +7,7 @@ namespace app\modules\api\controllers;
 use app\components\LocalFileHelper;
 use app\models\Video;
 use Yii;
+use yii\db\Expression;
 use yii\filters\AccessControl;
 use yii\web\UploadedFile;
 
@@ -59,7 +60,7 @@ class VideosController extends BaseActiveController
     public function actionCreate()
     {
         if(!isset($_FILES['video']) || !isset($_FILES['preview']))
-            return [ 'status' => 'reject'];
+            return ['status' => 'reject'];
 
         $video = new Video();
         $request = Yii::$app->request->post();

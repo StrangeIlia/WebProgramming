@@ -76,6 +76,8 @@
 
         methods: {
             close : function() {
+                this.username = this.password = this.errors.method = "";
+                this.rememberMe = false;
                 this.$emit('close');
             },
 

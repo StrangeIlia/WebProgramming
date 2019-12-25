@@ -94,6 +94,8 @@
 
         methods: {
             close : function() {
+                this.result = this.name = "";
+                this.preview = this.video = null;
                 this.$emit('close');
             },
 

@@ -33,12 +33,25 @@ use yii\web\UploadedFile;
  */
 class Video extends ActiveRecord
 {
-    /**
-     * {@inheritdoc}
-     */
     public static function tableName()
     {
         return 'Videos';
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function rules()
+    {
+        return [
+            [['name', 'path', 'author', 'preview', 'numberOfViews'], 'required'],
+            [['author', 'numberOfViews'], 'integer'],
+            [['createdAt', 'updatedAt'], 'safe'],
+            [['name'], 'string', 'max' => 30],
+            [['path', 'preview'], 'string', 'max' => 100],
+            [['description'], 'string', 'max' => 50],
+            [['author'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['author' => 'id']],
+        ];
     }
 
     /**
@@ -53,20 +66,6 @@ class Video extends ActiveRecord
                 'updatedAtAttribute' => 'updatedAt',
                 'value' => new Expression('now()')
             ]
-        ];
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
-    {
-        return [
-            [['name', 'path', 'author', 'preview', 'numberOfViews'], 'required'],
-            [['author', 'numberOfViews'], 'integer'],
-            [['createdAt', 'updatedAt'], 'safe'],
-            [['name', 'path', 'description', 'preview'], 'string', 'max' => 50],
-            [['author'], 'exist', 'skipOnError' => true, 'targetClass' => Video::className(), 'targetAttribute' => ['author' => 'id']],
         ];
     }
 

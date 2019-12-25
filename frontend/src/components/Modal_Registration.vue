@@ -1,6 +1,6 @@
 <template>
     <transition name="modal_authorization">
-        <form @submit="login">
+        <form @submit="registration">
             <div class="modal-mask">
                 <div class="modal-wrapper">
                     <div class="modal-container">
@@ -97,6 +97,7 @@
 
         methods: {
             close : function() {
+                this.error = this.repeatPassword = this.password = this.email = this.username = "";
                 this.$emit('close');
             },
 
