@@ -1,42 +1,144 @@
 <template>
-    <transition name="modal">
-        <div class="modal-mask">
-            <div class="modal-wrapper">
-                <div class="modal-container">
+    <transition name="modal_addNewVideo">
+        <form @submit="send" enctype="multipart/form-data" method="post">
+            <div class="modal-mask" v-if="result === ''">
+                <div class="modal-wrapper">
+                    <div class="modal-container">
+                        <div class="modal-body">
+                            <slot name="body">
+                                    <div class="form-group">
+                                        <div>
+                                            <label for="video_name">Введите название видео</label>
+                                            <input id="video_name" type="text" class="form-control w-100" placeholder="Название" v-model="name">
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div>
+                                            <label>Выберите загружаемый файл:</label>
+                                            <input  type="file" ref="video" @change="loadVideo">
+                                            <div class="error"></div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <div>
+                                            <lable>Выберите превью</lable>
+                                            <input type="file" ref="preview" @change="loadPreview">
+                                            <div class="error"></div>
+                                        </div>
+                                    </div>
+                            </slot>
+                        </div>
 
-                    <div class="modal-header">
-                        <slot name="header">
-                            default header
-                        </slot>
-                    </div>
-
-                    <div class="modal-body">
-                        <slot name="body">
-                            default body
-                        </slot>
-                    </div>
-
-                    <div class="modal-footer">
-                        <slot name="footer">
-                            default footer
-                            <button class="modal-default-button" @click="$emit('close')">
-                                OK
-                            </button>
-                        </slot>
+                        <div class="modal-footer">
+                            <slot name="footer">
+                                <button type="submit" class="modal-default-button">
+                                    Добавление видео
+                                </button>
+                                <button class="modal-default-button" @click="close">
+                                    Отмена
+                                </button>
+                            </slot>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+            <div class="modal-mask" v-else>
+                <div class="modal-wrapper">
+                    <div class="modal-container">
+                        <div class="modal-body">
+                            {{result}}
+                        </div>
+                        <div class="modal-footer">
+                            <slot name="footer">
+                                <button class="modal-default-button" @click="close">
+                                    Отмена
+                                </button>
+                            </slot>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
     </transition>
 </template>
 
 <script>
+    import {HTTP} from "./http";
+    const { required, minLength, maxLength } = require('vuelidate/lib/validators');
+
     export default {
-        name: 'modal',
+        name: 'modal_addNewVideo',
+
+        data(){
+            return{
+                name: "",
+                video: null,
+                preview: null,
+                result: ""
+            }
+        },
+
+        computed: {
+            invalidVideoName : function(){
+                return  this.$v.name.$anyError && !this.$v.name.required;
+            }
+        },
+
+        validations: {
+            name: {
+                required,
+                minLength: minLength(5),
+                maxLength: maxLength(30)
+            },
+        },
+
         methods: {
-            close() {
+            close : function() {
                 this.$emit('close');
             },
+
+            send : function (e) {
+                let okey = true;
+
+                if(!this.video){
+                    this.error = 'Выберите загружаемое видео';
+                    okey = false;
+                }
+
+                if(!this.preview){
+                    this.error= 'Выберите превью';
+                    okey = false;
+                }
+
+                if(okey){
+                    let data = new FormData();
+                    data.append('name', this.name);
+                    data.append('video', this.video);
+                    data.append('preview', this.preview);
+                    HTTP.post('/videos/create', data, {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    )
+                        .then(response => {
+                            if(response.data.status === 'success')
+                                this.result = 'Видео успешно добавлено!!!';
+                            else
+                                this.result = 'Не удалось добавить видео!!!'
+                        })
+
+                        .catch(()=> this.result = 'Нет отклика от сервера');
+                }
+
+                e.preventDefault();
+            },
+
+            loadVideo : function(e){
+                this.video= e.target.files[0];
+            },
+
+            loadPreview : function(e){
+                this.preview = e.target.files[0];
+            }
         },
     };
 </script>
@@ -57,10 +159,12 @@
     .modal-wrapper {
         display: table-cell;
         vertical-align: middle;
+        horiz-align: center;
     }
 
     .modal-container {
-        width: 300px;
+        width: 30%;
+        min-width: 500px;
         margin: 0px auto;
         padding: 20px 30px;
         background-color: #fff;
@@ -75,6 +179,12 @@
         color: #42b983;
     }
 
+    .my-modal-header {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
     .modal-body {
         margin: 20px 0;
     }
@@ -82,15 +192,6 @@
     .modal-default-button {
         float: right;
     }
-
-    /*
-     * The following styles are auto-applied to elements with
-     * transition="modal" when their visibility is toggled
-     * by Vue.js.
-     *
-     * You can easily play with the modal transition by editing
-     * these styles.
-     */
 
     .modal-enter {
         opacity: 0;
