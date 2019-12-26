@@ -80,7 +80,7 @@
                 name: "",
                 video: null,
                 preview: null,
-                description: null,
+                description: "",
                 result: "",
                 sendData: false
             }
@@ -102,7 +102,7 @@
 
         methods: {
             close : function() {
-                this.result = this.name = "";
+                this.description = this.result = this.name = "";
                 this.preview = this.video = null;
                 this.sendData = false;
                 this.$emit('close');
@@ -112,6 +112,7 @@
                 this.$v.$touch();
                 if(!this.$v.$invalid) {
                     let okey = true;
+
                     if(!this.video){
                         this.error = 'Выберите загружаемое видео';
                         okey = false;
@@ -124,15 +125,14 @@
 
                     if(okey){
                         this.sendData = true;
-                        if(this.description === '')
-                            this.description = null;
+                        let data = new FormData();
+                        data.append('name', this.name);
+                        data.append('video', this.video);
+                        data.append('preview', this.preview);
+                        if(this.description !== '')
+                            data.append('description', this.description);
 
-                        HTTP.post('/videos/create', {
-                                name: this.name,
-                                video: this.video,
-                                preview: this.preview,
-                                description: this.description
-                            }, {
+                        HTTP.post('/videos/create', data, {
                                 'Content-Type': 'multipart/form-data'
                             }
                         )
@@ -140,7 +140,7 @@
                                 if(response.data.status === 'success')
                                     this.result = 'Видео успешно добавлено!!!';
                                 else
-                                    this.result = 'Не удалось добавить видео!!!';
+                                    this.result = response.data.result;//'Не удалось добавить видео!!!';
                                 this.sendData = false;
                             })
 

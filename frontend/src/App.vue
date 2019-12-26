@@ -44,10 +44,6 @@
       </div>
     </footer>
 
-
-
-
-
   </div>
 </template>
 

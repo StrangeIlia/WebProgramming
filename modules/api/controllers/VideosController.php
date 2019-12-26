@@ -71,13 +71,10 @@ class VideosController extends BaseActiveController
             $video->path = 'video';
             $video->preview = 'preview';
             if($video->save()){
-                return [
-                    'status' => 'success',
-                ];
+                return ['status' => 'success'];
             }
+            return ['status' => 'reject'];
         }
-        return [
-            'status' => 'reject',
-        ];
+        return ['status' => 'reject'];
     }
 }
