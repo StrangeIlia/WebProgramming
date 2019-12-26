@@ -19,10 +19,15 @@
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   {{$root.username}}
                 </button>
-                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                  <button @click="show_AddNewVideo" class="dropdown-item">Добавить видео</button>
-                  <a class="dropdown-item">Добавить плейлист</a>
-                  <a @click="logout" class="dropdown-item" href="#">Выход</a>
+                <div class="dropdown-menu dropdown-menu-right">
+                  <a class="dropdown-item submenu-right" >Менеджер видео</a>
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <button @click="show_AddNewVideo" class="dropdown-item">Добавить видео</button>
+                    <button class="dropdown-item">Изменить видео</button>
+                    <button class="dropdown-item">Удалить видео</button>
+                  </div>
+                  <button class="dropdown-item">Добавить плейлист</button>
+                  <button class="dropdown-item" @click="logout">Выход</button>
                 </div>
               </div>
               <modal_addNewVideo v-show="modal.addNewVideo" @close="close_AddNewVideo"/>

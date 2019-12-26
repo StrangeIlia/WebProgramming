@@ -102,3 +102,30 @@ body{
     -webkit-transform: scale(1.1);
     transform: scale(1.1);
 }
+
+
+
+
+.dropdown-menu .dropdown-menu {
+    top: 0%;
+    left: 100%;
+    right: -100%;
+}
+
+.dropdown-menu .dropdown-menu-right {
+    top: 0%;
+    left: -100%;
+    right: 100%;
+}
+
+.dropdown-item + .dropdown-menu {
+    display: block;
+    opacity: 0;
+    transition: opacity .3s 1s;
+}
+
+.dropdown-item:hover + .dropdown-menu,
+.dropdown-menu:hover {
+    opacity: 1;
+    transition: opacity .3s -.1s;
+}

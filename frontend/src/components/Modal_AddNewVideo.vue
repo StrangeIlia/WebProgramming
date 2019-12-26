@@ -6,26 +6,32 @@
                     <div class="modal-container">
                         <div class="modal-body">
                             <slot name="body">
-                                    <div class="form-group">
-                                        <div>
-                                            <label for="video_name">Введите название видео</label>
-                                            <input id="video_name" type="text" class="form-control w-100" placeholder="Название" v-model="name">
-                                        </div>
+                                <div class="form-group">
+                                    <div>
+                                        <label for="video_name">Введите название видео</label>
+                                        <input id="video_name" type="text" class="form-control w-100" placeholder="Название" v-model="name">
                                     </div>
-                                    <div class="form-group">
-                                        <div>
-                                            <label >Выберите загружаемый файл:</label>
-                                            <input type="file" ref="video" @change="loadVideo">
-                                            <div class="error"></div>
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <div>
+                                        <label for="video_description">Введите описание видео (необязательно)</label>
+                                        <textarea id="video_description" type="text" class="form-control w-100" placeholder="Описание" v-model="description"/>
                                     </div>
-                                    <div class="form-group">
-                                        <div>
-                                            <label>Выберите превью</label>
-                                            <input type="file" ref="preview" @change="loadPreview">
-                                            <div class="error"></div>
-                                        </div>
+                                </div>
+                                <div class="form-group">
+                                    <div>
+                                        <label >Выберите загружаемый файл:</label>
+                                        <input type="file" ref="video" @change="loadVideo">
+                                        <div class="error"></div>
                                     </div>
+                                </div>
+                                <div class="form-group">
+                                    <div>
+                                        <label>Выберите превью</label>
+                                        <input type="file" ref="preview" @change="loadPreview">
+                                        <div class="error"></div>
+                                    </div>
+                                </div>
                             </slot>
                         </div>
 
@@ -74,6 +80,7 @@
                 name: "",
                 video: null,
                 preview: null,
+                description: null,
                 result: "",
                 sendData: false
             }
@@ -102,43 +109,47 @@
             },
 
             addVideo : function (e) {
-                let okey = true;
+                this.$v.$touch();
+                if(!this.$v.$invalid) {
+                    let okey = true;
+                    if(!this.video){
+                        this.error = 'Выберите загружаемое видео';
+                        okey = false;
+                    }
 
-                if(!this.video){
-                    this.error = 'Выберите загружаемое видео';
-                    okey = false;
+                    if(!this.preview){
+                        this.error= 'Выберите превью';
+                        okey = false;
+                    }
+
+                    if(okey){
+                        this.sendData = true;
+                        if(this.description === '')
+                            this.description = null;
+
+                        HTTP.post('/videos/create', {
+                                name: this.name,
+                                video: this.video,
+                                preview: this.preview,
+                                description: this.description
+                            }, {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        )
+                            .then(response => {
+                                if(response.data.status === 'success')
+                                    this.result = 'Видео успешно добавлено!!!';
+                                else
+                                    this.result = 'Не удалось добавить видео!!!';
+                                this.sendData = false;
+                            })
+
+                            .catch(() =>{
+                                this.result = 'Нет отклика от сервера';
+                                this.sendData = false;
+                            });
+                    }
                 }
-
-                if(!this.preview){
-                    this.error= 'Выберите превью';
-                    okey = false;
-                }
-
-                if(okey){
-                    this.sendData = true;
-
-                    let data = new FormData();
-                    data.append('name', this.name);
-                    data.append('video', this.video);
-                    data.append('preview', this.preview);
-                    HTTP.post('/videos/create', data, {
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    )
-                        .then(response => {
-                            if(response.data.status === 'success')
-                                this.result = 'Видео успешно добавлено!!!';
-                            else
-                                this.result = 'Не удалось добавить видео!!!';
-                            this.sendData = false;
-                        })
-
-                        .catch(() =>{
-                            this.result = 'Нет отклика от сервера';
-                            this.sendData = false;
-                        });
-                }
-
                 e.preventDefault();
             },
 

@@ -6,6 +6,7 @@ import FavoriteVideos from "../views/FavoriteVideos";
 import LoadedVideos from "../views/LoadedVideos";
 import Playlists from "../views/Playlists";
 import UserPage from "../views/UserPage";
+import Test from "../views/Test";
 
 Vue.use(VueRouter);
 
@@ -14,6 +15,11 @@ const routes = [
     path: '/',
     name: 'home',
     component: Home
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: Test
   },
   {
     path: '/video/:id',
