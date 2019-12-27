@@ -23,7 +23,9 @@
                   <a class="dropdown-item submenu-right" >Менеджер видео</a>
                   <div class="dropdown-menu dropdown-menu-right">
                     <button @click="show_AddNewVideo" class="dropdown-item">Добавить видео</button>
-                    <button class="dropdown-item">Изменить видео</button>
+                    <router-link :to="{name: 'update_video', params: {}}">
+                      <button class="dropdown-item">Изменить видео</button>
+                    </router-link>
                     <router-link :to="{name: 'delete_video', params: {}}">
                       <button class="dropdown-item">Удалить видео</button>
                     </router-link>

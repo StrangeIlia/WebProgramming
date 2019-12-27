@@ -12,7 +12,9 @@
         </div>
         <div class="mw-100" style="border-bottom: solid 1px black;">
             <div class="row justify-content-between ml-auto mr-auto">
-                <div>Добавил пользователь: <a href="#">{{video.author}}</a></div>
+                <div>Добавил пользователь:
+                    <router-link :to="{name: 'user_page', params:{username: video.author}}">{{video.author}}</router-link>
+                </div>
                 <div>Количество просмотров: {{video.numberOfViews}}</div>
             </div>
             <div>Описание: {{video.description}}</div>

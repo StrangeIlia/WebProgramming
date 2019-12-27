@@ -1,10 +1,10 @@
 <template>
     <div class="album py-5">
-        <div style="display: flex; flex-direction: row; justify-content: center;">Выберите видео для удаления: </div>
+        <div style="display: flex; flex-direction: row; justify-content: center;">Выберите видео для обновления: </div>
         <div class="container">
             <div class="row">
                 <div v-for="video in videos" :key="video.id" class="col-md-3">
-                    <div class="card mb-4 shadow-sm" @click="open_DeleteVideo(video)">
+                    <div class="card mb-4 shadow-sm" @click="open_UpdateVideo(video)">
                         <img :src="video.preview" alt = "Невозможно" width="100%" height="100%">
                         <div class = "card-body">
                             <div class="card-text">
@@ -16,18 +16,18 @@
             </div>
         </div>
 
-        <modal_confirmationDeleteVideo v-show="modal.deleteVideo" v-bind:video="modal.deleteVideoParams.video" @close="close_DeleteVideo"/>
+        <modal_ChangeVideo v-show="modal.updateVideo" v-bind:video="modal.updateVideoParams.video" @close="close_UpdateVideo" ref="updateVideo"/>
 
     </div>
 </template>
 
 <script>
     import { HTTP } from "../components/http";
-    import modal_confirmationDeleteVideo from "../components/Modal_ConfirmationDeleteVideo";
+    import modal_ChangeVideo from "../components/Modal_ChangeVideo";
 
     export default {
         components: {
-            modal_confirmationDeleteVideo
+            modal_ChangeVideo
         },
 
         name: 'Videos',
@@ -35,8 +35,8 @@
             return{
                 videos: [],
                 modal: {
-                    deleteVideo: false,
-                    deleteVideoParams : {
+                    updateVideo: false,
+                    updateVideoParams : {
                         video: null
                     }
                 }
@@ -44,15 +44,18 @@
         },
 
         methods: {
-            open_DeleteVideo : function(video){
-                this.modal.deleteVideoParams.video = video;
-                this.modal.deleteVideo = true;
+            open_UpdateVideo : function(video){
+                this.modal.updateVideoParams.video = video;
+                this.$refs.updateVideo.localCopy.id = video.id;
+                this.$refs.updateVideo.localCopy.name = video.name;
+                this.$refs.updateVideo.localCopy.description = video.description === null ? '' : video.description;
+                this.modal.updateVideo = true;
             },
 
-            close_DeleteVideo : function () {
-              this.modal.deleteVideo = false;
-              this.modal.deleteVideoParams.video = null;
-            }
+            close_UpdateVideo : function () {
+              this.modal.updateVideo = false;
+              this.modal.updateVideoParams.video = null;
+            },
         },
 
         created() {

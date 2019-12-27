@@ -10,6 +10,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Expression;
+use yii\helpers\FileHelper;
 use yii\web\UploadedFile;
 
 /**
@@ -139,8 +140,17 @@ class Video extends ActiveRecord
         if(!parent::beforeSave($insert))
             return false;
 
-        $this->uploadVideo();
-        $this->uploadPreview();
+        if(isset($_FILES['video']))
+        {
+            if(!$insert) LocalFileHelper::deleteFile($this->path);
+            $this->uploadVideo();
+        }
+        if(isset($_FILES['preview']))
+        {
+            if(!$insert) LocalFileHelper::deleteFile($this->preview);
+            $this->uploadPreview();
+        }
+
         return true;
     }
 
@@ -149,7 +159,7 @@ class Video extends ActiveRecord
      */
     public function uploadVideo()
     {
-        $file = UploadedFile::getInstancesByName($this['path'])[0];
+        $file = UploadedFile::getInstancesByName('video')[0];
         if($file===null) return;
         $this->path = LocalFileHelper::createVideo($file);
         $file->saveAs($this->path);
@@ -160,7 +170,7 @@ class Video extends ActiveRecord
      */
     public function uploadPreview()
     {
-        $file = UploadedFile::getInstancesByName($this['preview'])[0];
+        $file = UploadedFile::getInstancesByName('preview')[0];
         if($file===null) return;
         $this->preview = LocalFileHelper::createPreview($file);
         $file->saveAs($this->preview);
@@ -174,6 +184,8 @@ class Video extends ActiveRecord
         LocalFileHelper::deleteFile($this['preview']);
         return true;
     }
+
+
 
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {

@@ -4,6 +4,7 @@
 namespace app\modules\api\controllers;
 
 
+use PHPUnit\Util\Log\JSON;
 use Yii;
 use app\models\Video;
 use yii\filters\AccessControl;
@@ -52,6 +53,7 @@ class VideosController extends BaseActiveController
     {
         $actions = parent::actions();
         unset($actions['create']);
+        unset($actions['update']);
         return $actions;
     }
 
@@ -68,10 +70,23 @@ class VideosController extends BaseActiveController
         if($video->load($request, '')){
             $video->path = 'video';
             $video->preview = 'preview';
-            if($video->save()){
+            if($video->save())
                 return ['status' => 'success'];
-            }
-            return ['status' => 'reject'];
+        }
+        return ['status' => 'reject'];
+    }
+
+    public function actionUpdate($id)
+    {
+        $video = Video::findOne($id);
+        if ($video === null) return ['status' => 'reject'];
+        $request = Yii::$app->request->getBodyParams();
+        if($video->load($request, '')){
+            if($video->save())
+                return [
+                    'status' => 'success',
+                    'video' => $video,
+                ];
         }
         return ['status' => 'reject'];
     }
