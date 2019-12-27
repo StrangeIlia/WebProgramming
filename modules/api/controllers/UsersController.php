@@ -4,8 +4,8 @@
 namespace app\modules\api\controllers;
 
 
-use app\models\User;
 use Yii;
+use app\models\User;
 use yii\filters\AccessControl;
 
 class UsersController extends BaseActiveController
@@ -42,6 +42,11 @@ class UsersController extends BaseActiveController
                         //Доступ к методам index и view запрещен для всех
                         return false;
                     }
+                ],
+                [
+                    'allow' => true,
+                    'actions' => ['loaded_video', 'favorite_video'],
+                    'roles' => ['@']
                 ]
             ],
         ];
@@ -91,5 +96,16 @@ class UsersController extends BaseActiveController
             'status' => 'reject',
             'error' => 'Неверная форма отправки данных'
         ];
+    }
+
+
+    public function actionLoaded_video()
+    {
+        return Yii::$app->user->identity->getLoadedVideos();
+    }
+
+    public function actionFavorite_video()
+    {
+        return Yii::$app->user->identity->getFavoriteVideos();
     }
 }

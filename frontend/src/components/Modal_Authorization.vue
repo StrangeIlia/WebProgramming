@@ -1,6 +1,6 @@
 <template>
     <transition name="modal_authorization">
-        <form @submit="login">
+        <form>
             <div class="modal-mask">
                 <div class="modal-wrapper">
                     <div class="modal-container">
@@ -21,7 +21,7 @@
                                     <label><input type="checkbox" name="checkbox" v-model="rememberMe">Запомнить меня</label>
                                 </div>
                                 <div class="form-group">
-                                    <button type="submit" class="btn btn-success w-100">Войти</button>
+                                    <button type="submit" class="btn btn-success w-100" @click="login">Войти</button>
                                 </div>
                                 <div class="form-group">
                                     <button class="btn btn-primary w-100" @click="close">Вернуться на главную страницу</button>
@@ -81,7 +81,7 @@
                 this.$emit('close');
             },
 
-            login : function (e) {
+            login : function () {
                 this.$v.$touch();
                 if(!this.$v.$invalid) {
                     HTTP.post('/site/login', {
@@ -102,7 +102,6 @@
                             }
                         }).catch(() => this.errors.method = 'Нет отклика от сервера');
                 }
-                e.preventDefault();
             }
         },
     };

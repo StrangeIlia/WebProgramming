@@ -7,6 +7,7 @@ import LoadedVideos from "../views/LoadedVideos";
 import Playlists from "../views/Playlists";
 import UserPage from "../views/UserPage";
 import Test from "../views/Test";
+import Page_DeleteVideo from "../views/Page_DeleteVideo";
 
 Vue.use(VueRouter);
 
@@ -46,6 +47,11 @@ const routes = [
     path: '/user_page',
     name: 'user_page',
     component: UserPage
+  },
+  {
+    path: '/delete_video',
+    name: 'delete_video',
+    component: Page_DeleteVideo
   }
 ];
 

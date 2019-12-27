@@ -166,6 +166,15 @@ class Video extends ActiveRecord
         $file->saveAs($this->preview);
     }
 
+    public function beforeDelete()
+    {
+        if(!parent::beforeDelete())
+            return false;
+        LocalFileHelper::deleteFile($this['path']);
+        LocalFileHelper::deleteFile($this['preview']);
+        return true;
+    }
+
     public function toArray(array $fields = [], array $expand = [], $recursive = true)
     {
         $data = parent::toArray($fields, $expand, $recursive);

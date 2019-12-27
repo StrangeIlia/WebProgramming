@@ -86,20 +86,20 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
-     * @return ActiveQuery
+     * @return array|Playlist[]
      */
     public function getPlaylists()
     {
-        return $this->hasMany(Playlist::className(), ['author' => 'id']);
+        return $this->hasMany(Playlist::className(), ['author' => 'id'])->all();
     }
 
     /**
      * Возращает список видео, которые были загружены пользователем
-     * @return ActiveQuery
+     * @return array|Video[]
      */
     public function getLoadedVideos()
     {
-        return $this->hasMany(Video::className(), ['author' => 'id']);
+        return $this->hasMany(Video::className(), ['author' => 'id'])->all();
     }
 
     /**

@@ -1,6 +1,6 @@
 <template>
     <transition name="modal_addNewVideo">
-        <form @submit="addVideo" enctype="multipart/form-data" method="post">
+        <form>
             <div class="modal-mask" v-if="result === ''">
                 <div class="modal-wrapper">
                     <div class="modal-container">
@@ -10,6 +10,11 @@
                                     <div>
                                         <label for="video_name">Введите название видео</label>
                                         <input id="video_name" type="text" class="form-control w-100" placeholder="Название" v-model="name">
+                                        <div class="error" v-if="invalidVideoName">
+                                            <div v-if="!$v.name.required">Введите название видео</div>
+                                            <div v-if="!$v.name.minLength">Название видео должно быть не меньше 5 символов</div>
+                                            <div v-else-if="!$v.name.maxLength">Название видео должно быть не больше 30 символов</div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -21,15 +26,21 @@
                                 <div class="form-group">
                                     <div>
                                         <label >Выберите загружаемый файл:</label>
-                                        <input type="file" ref="video" @change="loadVideo">
-                                        <div class="error"></div>
+                                        <input type="file" ref="video" accept="video/*" @change="loadVideo">
+                                        <div class="error" v-if="invalidVideoFile">
+                                            <div v-if="!$v.video.required">
+                                            Выберите загружаемый файл
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <div>
                                         <label>Выберите превью</label>
-                                        <input type="file" ref="preview" @change="loadPreview">
-                                        <div class="error"></div>
+                                        <input type="file" ref="preview" accept="image/*" @change="loadPreview">
+                                        <div class="error" v-if="invalidPreviewFile">
+                                            <div v-if="!$v.preview.required">Выберите превью для видео</div>
+                                        </div>
                                     </div>
                                 </div>
                             </slot>
@@ -37,7 +48,7 @@
 
                         <div class="modal-footer">
                             <slot name="footer">
-                                <button type="submit" class="modal-default-button" :disabled="sendData">
+                                <button type="submit" class="modal-default-button" @click="addVideo" :disabled="sendData">
                                     Добавление видео
                                 </button>
                                 <button class="modal-default-button" @click="close">
@@ -88,8 +99,14 @@
 
         computed: {
             invalidVideoName : function(){
-                return  this.$v.name.$anyError && !this.$v.name.required;
-            }
+                return this.$v.name.$anyError;
+            },
+            invalidVideoFile : function(){
+                return this.$v.video.$anyError;
+            },
+            invalidPreviewFile : function(){
+                return this.$v.video.$anyError;
+            },
         },
 
         validations: {
@@ -98,6 +115,12 @@
                 minLength: minLength(5),
                 maxLength: maxLength(30)
             },
+            video: {
+                required
+            },
+            preview: {
+                required
+            }
         },
 
         methods: {
@@ -108,7 +131,7 @@
                 this.$emit('close');
             },
 
-            addVideo : function (e) {
+            addVideo : function () {
                 this.$v.$touch();
                 if(!this.$v.$invalid) {
                     let okey = true;
@@ -140,7 +163,7 @@
                                 if(response.data.status === 'success')
                                     this.result = 'Видео успешно добавлено!!!';
                                 else
-                                    this.result = response.data.result;//'Не удалось добавить видео!!!';
+                                    this.result = 'Не удалось добавить видео!!!';
                                 this.sendData = false;
                             })
 
@@ -150,7 +173,6 @@
                             });
                     }
                 }
-                e.preventDefault();
             },
 
             loadVideo : function(e){

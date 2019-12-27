@@ -4,12 +4,10 @@
 namespace app\modules\api\controllers;
 
 
-use app\components\LocalFileHelper;
-use app\models\Video;
 use Yii;
-use yii\db\Expression;
+use app\models\Video;
 use yii\filters\AccessControl;
-use yii\web\UploadedFile;
+
 
 class VideosController extends BaseActiveController
 {
@@ -40,7 +38,7 @@ class VideosController extends BaseActiveController
                     'roles' => ['@'], //только авторизованные пользователи
                     'matchCallback' => function($rule, $action){
                         //Разрешить модификацию только авторам видео
-                        $selectedVideo = Video::findOne(Yii::$app->request->post()['id']);
+                        $selectedVideo = Video::findOne(['id' => Yii::$app->request->get('id')]);
                         return $selectedVideo['author'] === Yii::$app->user->identity['id'];
                     }
                 ]
